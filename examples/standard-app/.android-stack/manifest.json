@@ -1,0 +1,164 @@
+{
+  "managed_files": {
+    "app/android-stack/image/Usage.md": "87ba177a744ea904b14e10618a252b48aca8374d2f784c88a13892e71df8a7e0",
+    "app/android-stack/logging/Usage.md": "a6c6653add3fadb764b46e9f1a005922fe6ff480e60480d2edd913fba2a2f07d",
+    "app/android-stack/network/Usage.md": "3d39a865e92bdf8f4353fa00a409191ac422359e0587625326b88424a66e738a",
+    "app/build.gradle.kts": "adcf2cfb383fdf9c583acf7ff943d09fd9cb4a473d7dcc21b8d61fe0694522e3",
+    "app/src/main/kotlin/com/example/standard/image/AppImage.kt": "86aaa297092e132ebb709be26a20e87724f0a2301b8513ece3e6ab8140248a7c",
+    "app/src/main/kotlin/com/example/standard/logging/AppLogger.kt": "aec208b42ae749b9c866121955d21aae26f69b93c9875132a99d358d6f50cb69",
+    "app/src/main/kotlin/com/example/standard/logging/LoggerModule.kt": "278854a5ea1701bf0912e1f43596a2170bcd4f19dbef779505b22f144291e2ca",
+    "app/src/main/kotlin/com/example/standard/network/Network.kt": "95a3040f337e9b895a1ea537255542ac6195720ab3ef3621bfb4e119d46696ca",
+    "app/src/main/kotlin/com/example/standard/network/NetworkModule.kt": "5f215f0de7134b857821dd416e139a1b49a5d0b83cc3085b2c039be142081521",
+    "app/src/test/kotlin/com/example/standard/logging/LoggerTest.kt": "2ec60171679d4f13ecca063e7abc22fedd67e9ca554e1547ecc5d5885e4058ba",
+    "app/src/test/kotlin/com/example/standard/network/NetworkTest.kt": "8fb9c72811d112f081804654c20f66d385f23cae760dc79c1cbef53d15a8d770"
+  },
+  "recipes": {
+    "coil-standard": {
+      "adaptation": {
+        "hilt": true,
+        "module": "app",
+        "package": "com.example.standard",
+        "package_path": "com/example/standard"
+      },
+      "dependencies": [
+        {
+          "configuration": "implementation",
+          "module": "io.coil-kt.coil3:coil-compose",
+          "version": "3.3.0"
+        },
+        {
+          "configuration": "implementation",
+          "module": "io.coil-kt.coil3:coil-network-okhttp",
+          "version": "3.3.0"
+        }
+      ],
+      "environment": {
+        "agp": "8.13.1",
+        "gradle": "8.14.3",
+        "kotlin": "2.2.20"
+      },
+      "files": {
+        "app/android-stack/image/Usage.md": "87ba177a744ea904b14e10618a252b48aca8374d2f784c88a13892e71df8a7e0",
+        "app/src/main/kotlin/com/example/standard/image/AppImage.kt": "86aaa297092e132ebb709be26a20e87724f0a2301b8513ece3e6ab8140248a7c"
+      },
+      "modified": {
+        "app/build.gradle.kts": "963033848822618f12f7a637809c4f5a5e9527a41f3a2894bbac3a52e0f20dba"
+      },
+      "source": {
+        "copied_source": [],
+        "license": "Apache-2.0",
+        "repository": "https://github.com/coil-kt/coil",
+        "revision": "3.3.0"
+      },
+      "version": "0.1.0"
+    },
+    "retrofit-standard": {
+      "adaptation": {
+        "hilt": true,
+        "module": "app",
+        "package": "com.example.standard",
+        "package_path": "com/example/standard"
+      },
+      "dependencies": [
+        {
+          "configuration": "implementation",
+          "module": "com.squareup.retrofit2:retrofit",
+          "version": "3.0.0"
+        },
+        {
+          "configuration": "implementation",
+          "module": "com.squareup.retrofit2:converter-gson",
+          "version": "3.0.0"
+        },
+        {
+          "configuration": "implementation",
+          "module": "com.squareup.okhttp3:okhttp",
+          "version": "4.12.0"
+        },
+        {
+          "configuration": "implementation",
+          "module": "com.google.code.gson:gson",
+          "version": "2.13.1"
+        },
+        {
+          "configuration": "implementation",
+          "module": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+          "version": "1.10.2"
+        },
+        {
+          "configuration": "testImplementation",
+          "module": "com.squareup.okhttp3:mockwebserver",
+          "version": "4.12.0"
+        },
+        {
+          "configuration": "testImplementation",
+          "module": "junit:junit",
+          "version": "4.13.2"
+        }
+      ],
+      "environment": {
+        "agp": "8.13.1",
+        "gradle": "8.14.3",
+        "kotlin": "2.2.20"
+      },
+      "files": {
+        "app/android-stack/network/Usage.md": "3d39a865e92bdf8f4353fa00a409191ac422359e0587625326b88424a66e738a",
+        "app/src/main/kotlin/com/example/standard/network/Network.kt": "95a3040f337e9b895a1ea537255542ac6195720ab3ef3621bfb4e119d46696ca",
+        "app/src/main/kotlin/com/example/standard/network/NetworkModule.kt": "5f215f0de7134b857821dd416e139a1b49a5d0b83cc3085b2c039be142081521",
+        "app/src/test/kotlin/com/example/standard/network/NetworkTest.kt": "8fb9c72811d112f081804654c20f66d385f23cae760dc79c1cbef53d15a8d770"
+      },
+      "modified": {
+        "app/build.gradle.kts": "bfb82e427f487d6277f54f9d9a08dd5d34012ed280ec29d9f6746dea612ed086"
+      },
+      "source": {
+        "copied_source": [],
+        "license": "Apache-2.0",
+        "repository": "https://github.com/square/retrofit",
+        "revision": "3.0.0"
+      },
+      "version": "0.1.1"
+    },
+    "timber-standard": {
+      "adaptation": {
+        "hilt": true,
+        "module": "app",
+        "package": "com.example.standard",
+        "package_path": "com/example/standard"
+      },
+      "dependencies": [
+        {
+          "configuration": "implementation",
+          "module": "com.jakewharton.timber:timber",
+          "version": "5.0.1"
+        },
+        {
+          "configuration": "testImplementation",
+          "module": "junit:junit",
+          "version": "4.13.2"
+        }
+      ],
+      "environment": {
+        "agp": "8.13.1",
+        "gradle": "8.14.3",
+        "kotlin": "2.2.20"
+      },
+      "files": {
+        "app/android-stack/logging/Usage.md": "a6c6653add3fadb764b46e9f1a005922fe6ff480e60480d2edd913fba2a2f07d",
+        "app/src/main/kotlin/com/example/standard/logging/AppLogger.kt": "aec208b42ae749b9c866121955d21aae26f69b93c9875132a99d358d6f50cb69",
+        "app/src/main/kotlin/com/example/standard/logging/LoggerModule.kt": "278854a5ea1701bf0912e1f43596a2170bcd4f19dbef779505b22f144291e2ca",
+        "app/src/test/kotlin/com/example/standard/logging/LoggerTest.kt": "2ec60171679d4f13ecca063e7abc22fedd67e9ca554e1547ecc5d5885e4058ba"
+      },
+      "modified": {
+        "app/build.gradle.kts": "adcf2cfb383fdf9c583acf7ff943d09fd9cb4a473d7dcc21b8d61fe0694522e3"
+      },
+      "source": {
+        "copied_source": [],
+        "license": "Apache-2.0",
+        "repository": "https://github.com/JakeWharton/timber",
+        "revision": "5.0.1"
+      },
+      "version": "0.1.1"
+    }
+  },
+  "schema": 1
+}

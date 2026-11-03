@@ -1,0 +1,23 @@
+id: timber-standard
+name: Timber Standard
+version: 0.1.1
+category: logging
+description: Explicit debug-only Timber facade with allowlisted structured fields.
+source:
+  repository: https://github.com/JakeWharton/timber
+  revision: 5.0.1
+  license: Apache-2.0
+  copied_source: []
+requirements: {language: kotlin, gradle_dsl: kotlin, min_sdk: 21}
+dependencies:
+  - {module: 'com.jakewharton.timber:timber', version: '5.0.1', configuration: implementation}
+  - {module: 'junit:junit', version: '4.13.2', configuration: testImplementation}
+features: [debug-only, levels, tags, structured-safe-fields, optional-hilt]
+variables: {package: detected namespace}
+files:
+  - {template: templates/AppLogger.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/logging/AppLogger.kt'}
+  - {template: templates/LoggerModule.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/logging/LoggerModule.kt', when: hilt}
+  - {template: templates/LoggerTest.kt.j2, path: '{{ module }}/src/test/kotlin/{{ package_path }}/logging/LoggerTest.kt'}
+  - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/logging/Usage.md'}
+integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
+validation: [schema, owned-file-hashes, gradle-build, unit-test]

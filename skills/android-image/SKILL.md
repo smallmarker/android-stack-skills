@@ -1,0 +1,14 @@
+---
+name: android-image
+description: Integrate image loading in Kotlin Android projects with Coil AppImage or Glide ImageView helpers. Use for Compose, XML ViewBinding, Coil, Glide, placeholders or image Recipe status. Preserve the image library already used by the project.
+license: MIT
+---
+
+Requires android-stack, Python 3.11+, JDK 17 and an Android SDK for builds.
+
+1. Run `android-stack version`, `android-stack recipes list`, `android-stack inspect --project <path> --json` and `android-stack status --project <path>`. Select the target module explicitly with `--module` if needed. Read the selected module's `image_libraries`, `compose`, `view_binding` and `xml_layouts`. Confirm ambiguous results in Gradle declarations and source imports. For status-only requests, report without writing.
+2. Preserve an existing Coil or Glide library and its version. If both are present, inspect the specific screen and ask which integration to extend if still ambiguous. If the requested library conflicts with the existing one, report the conflict and stop automatic installation. An explicit library choice is not authorization to migrate, remove or add a competing library.
+3. For a module without an image library, honor an explicit supported choice. Otherwise use `coil-standard` for Compose screens and `glide-standard` for XML Views. For mixed UI choose based on the target screen. `coil-standard` requires Compose. `glide-standard` targets ImageView and can run in Compose via AndroidView. For XML-only + Coil, report that the existing Coil Recipe cannot generate a Views integration and preserve any existing Coil code.
+4. Run `android-stack plan --project <path> --recipe <recipe>`. Review version and file conflicts before `android-stack install --project <path> --recipe <recipe>`. Require INTERNET permission and preserve Application and screen code. Do not bypass a conflict by rewriting dependencies or overwriting source. A repeated install should report already-installed.
+5. Read the generated `app/android-stack/image/Usage.md` in the selected module. For Coil, initialize AppImages in Application.onCreate only if appropriate for the existing loader. For Glide, call loadGlide on an ImageView on the main thread and clear requests on disposal or recycling as documented. Match placeholders, size and accessibility to the screen.
+6. Run `android-stack verify --project <path>` with the same module. Report the build and test outcomes. On a failed build, preserve diagnostics. If a write is interrupted, inspect the journal and use `android-stack recover` only after confirming no live installer owns the lock.

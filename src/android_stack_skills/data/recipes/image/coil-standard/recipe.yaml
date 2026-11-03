@@ -1,0 +1,21 @@
+id: coil-standard
+name: Coil Standard
+version: 0.1.0
+category: image
+description: Compose AppImage with shared Coil cache and accessible loading states.
+source:
+  repository: https://github.com/coil-kt/coil
+  revision: 3.3.0
+  license: Apache-2.0
+  copied_source: []
+requirements: {language: kotlin, gradle_dsl: kotlin, min_sdk: 21, compose: true}
+dependencies:
+  - {module: 'io.coil-kt.coil3:coil-compose', version: '3.3.0', configuration: implementation}
+  - {module: 'io.coil-kt.coil3:coil-network-okhttp', version: '3.3.0', configuration: implementation}
+features: [compose, shared-loader, cache, placeholder, error-state, shape, content-scale]
+variables: {package: detected namespace}
+files:
+  - {template: templates/AppImage.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/image/AppImage.kt'}
+  - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/image/Usage.md'}
+integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
+validation: [schema, owned-file-hashes, gradle-build, unit-test]

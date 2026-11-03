@@ -1,0 +1,156 @@
+package com.example.standard.network
+
+import com.google.gson.JsonParseException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.async
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.Protocol
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.Assert.*
+import org.junit.Test
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
+
+class NetworkTest {
+    private fun api(server: MockWebServer, client: OkHttpClient = OkHttpClient()): UserApi =
+        Retrofit.Builder().baseUrl(server.url("/"))
+            .client(client).addConverterFactory(GsonConverterFactory.create())
+            .build().create(UserApi::class.java)
+
+    @Test fun success() = runBlocking {
+        MockWebServer().use { server ->
+            server.enqueue(MockResponse().setBody("""{"id":1,"name":"Ada"}"""))
+            assertEquals(ApiResult.Success(User(1, "Ada")), safeApiCall { api(server).getUser() })
+        }
+    }
+
+    @Test fun httpErrors() = runBlocking {
+        MockWebServer().use { server ->
+            for (code in listOf(400, 401, 500)) {
+                server.enqueue(MockResponse().setResponseCode(code).setBody("private"))
+                assertEquals(ApiResult.Failure(ApiError.Http(code)), safeApiCall { api(server).getUser() })
+            }
+        }
+    }
+
+    @Test fun invalidJson() = runBlocking {
+        MockWebServer().use { server ->
+            server.enqueue(MockResponse().setBody("""{"id":{}}"""))
+            assertEquals(ApiResult.Failure(ApiError.Parsing), safeApiCall { api(server).getUser() })
+        }
+    }
+
+    @Test fun timeout() = runBlocking {
+        MockWebServer().use { server ->
+            server.enqueue(MockResponse().setBody("{}").setBodyDelay(1, TimeUnit.SECONDS))
+            val client = OkHttpClient.Builder().readTimeout(30, TimeUnit.MILLISECONDS).build()
+            assertEquals(ApiResult.Failure(ApiError.Timeout), safeApiCall { api(server, client).getUser() })
+        }
+    }
+
+    @Test fun connectionFailure() = runBlocking {
+        val port = ServerSocket(0).use { it.localPort }
+        val api = Retrofit.Builder().baseUrl("http://127.0.0.1:$port/")
+            .addConverterFactory(GsonConverterFactory.create()).build().create(UserApi::class.java)
+        assertEquals(ApiResult.Failure(ApiError.Connection), safeApiCall { api.getUser() })
+    }
+
+    @Test fun tokenHeaders() {
+        MockWebServer().use { server ->
+            for (token in listOf("test-token", "", null)) {
+                server.enqueue(MockResponse())
+                val client = OkHttpClient.Builder().addInterceptor(AuthInterceptor(TokenProvider { token }, server.url("/"))).build()
+                client.newCall(Request.Builder().url(server.url("/")).build()).execute().close()
+                assertEquals(token?.takeIf { it.isNotBlank() }?.let { "Bearer $it" }, server.takeRequest().getHeader("Authorization"))
+            }
+        }
+    }
+
+    @Test fun cancellationPropagates() {
+        val cancellation = CancellationException("cancel")
+        try {
+            runBlocking { safeApiCall<Unit> { throw cancellation } }
+            fail("Cancellation swallowed")
+        } catch (actual: CancellationException) { assertSame(cancellation, actual) }
+    }
+
+    @Test fun programmingErrorsPropagate() {
+        assertThrows(IllegalStateException::class.java) {
+            runBlocking { safeApiCall<Unit> { error("bug") } }
+        }
+    }
+
+    @Test fun tokenIsNotSentToAnotherOrigin() {
+        MockWebServer().use { trusted ->
+            MockWebServer().use { other ->
+                other.enqueue(MockResponse())
+                var tokenReads = 0
+                val client = OkHttpClient.Builder().addInterceptor(
+                    AuthInterceptor(TokenProvider { tokenReads++; "secret-token" }, trusted.url("/"))
+                ).build()
+                client.newCall(Request.Builder().url(other.url("/")).build()).execute().close()
+                assertNull(other.takeRequest().getHeader("Authorization"))
+                assertEquals(0, tokenReads)
+            }
+        }
+    }
+
+    @Test fun cancelledTransportDoesNotBecomeResult() {
+        val job = kotlinx.coroutines.Job()
+        runBlocking {
+            val task = kotlinx.coroutines.CoroutineScope(job).async(start = kotlinx.coroutines.CoroutineStart.UNDISPATCHED) {
+                safeApiCall<Unit> {
+                    kotlinx.coroutines.currentCoroutineContext()[kotlinx.coroutines.Job]!!.cancel()
+                    throw java.io.IOException("transport cancelled")
+                }
+            }
+            try { task.await(); fail("Cancellation swallowed") }
+            catch (_: CancellationException) { }
+        }
+    }
+
+    @Test fun wholeCallTimeout() = runBlocking {
+        MockWebServer().use { server ->
+            server.enqueue(MockResponse().setHeadersDelay(1, TimeUnit.SECONDS).setBody("{}"))
+            val client = OkHttpClient.Builder().callTimeout(30, TimeUnit.MILLISECONDS).build()
+            assertEquals(ApiResult.Failure(ApiError.Timeout), safeApiCall { api(server, client).getUser() })
+        }
+    }
+
+    @Test fun truncatedJsonIsParsingError() = runBlocking {
+        MockWebServer().use { server ->
+            server.enqueue(MockResponse().setBody("{\"id\":"))
+            assertEquals(ApiResult.Failure(ApiError.Parsing), safeApiCall { api(server).getUser() })
+        }
+    }
+
+    @Test fun commonHeadersAndTokensAreOriginScoped() {
+        val config = NetworkConfig("https://api.example.com/", headers = mapOf("X-Api-Key" to "secret"))
+        var tokenReads = 0
+        val client = HttpClientFactory.client(config, TokenProvider { tokenReads++; "token" })
+            .newBuilder().addInterceptor { chain ->
+                val trusted = chain.request().url.host == "api.example.com"
+                assertEquals(if (trusted) "secret" else null, chain.request().header("X-Api-Key"))
+                assertEquals(if (trusted) "Bearer token" else null, chain.request().header("Authorization"))
+                okhttp3.Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1)
+                    .code(200).message("OK").body("".toResponseBody()).build()
+            }.build()
+        for (url in listOf("https://api.example.com/user", "https://other.example.com/user")) {
+            client.newCall(Request.Builder().url(url).build()).execute().close()
+        }
+        assertEquals(1, tokenReads)
+    }
+
+    @Test fun productionConfigRequiresHttps() {
+        assertThrows(IllegalArgumentException::class.java) { NetworkConfig("http://example.com/") }
+        assertThrows(IllegalArgumentException::class.java) { NetworkConfig("https://user:password@example.com/") }
+        assertThrows(IllegalArgumentException::class.java) { NetworkConfig("https://example.com/?secret=/") }
+        assertThrows(IllegalArgumentException::class.java) { NetworkConfig("https://example.com/", headers = mapOf("Cookie" to "secret")) }
+    }
+}

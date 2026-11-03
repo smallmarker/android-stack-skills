@@ -1,0 +1,12 @@
+package com.example.standard.logging
+
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@Module
+@InstallIn(SingletonComponent::class)
+object LoggerModule {
+    @Provides fun logger(): Logger = AppLogger
+}

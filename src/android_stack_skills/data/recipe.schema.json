@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "category",
+    "description",
+    "source",
+    "requirements",
+    "dependencies",
+    "features",
+    "variables",
+    "files",
+    "integration",
+    "validation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "category": {
+      "enum": [
+        "project",
+        "network",
+        "image",
+        "logging"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "license",
+        "copied_source"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "copied_source": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "gradle_dsl",
+        "min_sdk"
+      ],
+      "properties": {
+        "language": {
+          "const": "kotlin"
+        },
+        "gradle_dsl": {
+          "const": "kotlin"
+        },
+        "min_sdk": {
+          "type": "integer",
+          "minimum": 21
+        },
+        "compose": {
+          "type": "boolean"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module",
+          "version",
+          "configuration"
+        ],
+        "properties": {
+          "module": {
+            "type": "string",
+            "pattern": "^[\\w.-]+:[\\w.-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d+){1,3}$"
+          },
+          "configuration": {
+            "enum": [
+              "implementation",
+              "testImplementation"
+            ]
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "variables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "template",
+          "path"
+        ],
+        "properties": {
+          "template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "when": {
+            "enum": [
+              "hilt"
+            ]
+          }
+        }
+      }
+    },
+    "integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy"
+      ],
+      "properties": {
+        "supports_existing_project": {
+          "type": "boolean"
+        },
+        "idempotent": {
+          "type": "boolean"
+        },
+        "strategy": {
+          "enum": [
+            "create-new-directory",
+            "append-dependency-block"
+          ]
+        },
+        "reuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "schema",
+          "owned-file-hashes",
+          "gradle-build",
+          "unit-test"
+        ]
+      }
+    }
+  }
+}

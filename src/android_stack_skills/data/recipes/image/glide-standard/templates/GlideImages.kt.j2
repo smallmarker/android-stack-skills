@@ -1,0 +1,26 @@
+package {{ package }}.image
+
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+
+internal fun glideOptions(@DrawableRes placeholder: Int, @DrawableRes error: Int): RequestOptions =
+    RequestOptions()
+        .placeholder(placeholder)
+        .error(error)
+        .fallback(error)
+
+/** Start the request on the main thread using the target view's lifecycle. */
+fun ImageView.loadGlide(model: Any?, @DrawableRes placeholder: Int = 0, @DrawableRes error: Int = placeholder) {
+    Glide.with(this)
+        .load(model)
+        .apply(glideOptions(placeholder, error))
+        .into(this)
+}
+
+/** Clear the previous request when recycling or disposing of a view. */
+fun ImageView.clearGlide() {
+    // Disposal can happen after the Activity is destroyed.
+    Glide.with(context.applicationContext).clear(this)
+}

@@ -1,0 +1,20 @@
+package {{ package }}.image
+
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class GlideImagesTest {
+    @Test fun requestOptionsUseDistinctLoadingAndFailureDrawables() {
+        val options = glideOptions(101, 202)
+        assertEquals(101, options.placeholderId)
+        assertEquals(202, options.errorId)
+        assertEquals(202, options.fallbackId)
+    }
+
+    @Test fun requestOptionsAllowNoDrawables() {
+        val options = glideOptions(0, 0)
+        assertEquals(0, options.placeholderId)
+        assertEquals(0, options.errorId)
+        assertEquals(0, options.fallbackId)
+    }
+}

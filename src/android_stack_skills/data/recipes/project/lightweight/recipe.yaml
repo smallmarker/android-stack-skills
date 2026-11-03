@@ -1,0 +1,35 @@
+id: lightweight
+name: Lightweight
+version: 0.1.0
+category: project
+description: Compose or XML ViewBinding MVVM project preset
+source:
+  repository: https://developer.android.com/topic/architecture
+  revision: '2026-11-02'
+  license: CC-BY-4.0
+  copied_source: []
+requirements:
+  language: kotlin
+  gradle_dsl: kotlin
+  min_sdk: 26
+dependencies: []
+features:
+- compose
+- xml-view-binding
+- mvvm
+variables:
+  name: project identifier
+  package: namespace
+files:
+- template: templates/README.md.j2
+  path: README.md
+integration:
+  strategy: create-new-directory
+  reuses:
+  - retrofit-standard
+  - coil-standard
+  - glide-standard
+  - timber-standard
+validation:
+- gradle-build
+- unit-test

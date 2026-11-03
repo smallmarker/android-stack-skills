@@ -1,0 +1,22 @@
+id: glide-standard
+name: Glide Standard
+version: 0.1.0
+category: image
+description: Lifecycle-aware Glide requests for ImageView, including Compose AndroidView interop.
+source:
+  repository: https://github.com/bumptech/glide
+  revision: v4.16.0
+  license: BSD-2-Clause (see upstream LICENSE for bundled components)
+  copied_source: []
+requirements: {language: kotlin, gradle_dsl: kotlin, min_sdk: 21}
+dependencies:
+  - {module: 'com.github.bumptech.glide:glide', version: '4.16.0', configuration: implementation}
+  - {module: 'junit:junit', version: '4.13.2', configuration: testImplementation}
+features: [image-view, lifecycle, placeholder, error-state, clear]
+variables: {package: detected namespace}
+files:
+  - {template: templates/GlideImages.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/image/GlideImages.kt'}
+  - {template: templates/GlideImagesTest.kt.j2, path: '{{ module }}/src/test/kotlin/{{ package_path }}/image/GlideImagesTest.kt'}
+  - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/image/Usage.md'}
+integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
+validation: [schema, owned-file-hashes, gradle-build, unit-test]

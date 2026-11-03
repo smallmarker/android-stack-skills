@@ -1,0 +1,39 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+{% if ui == 'compose' %}    alias(libs.plugins.kotlin.compose)
+{% endif %}{% if hilt %}    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
+{% endif %}}
+android {
+    namespace = "{{ package }}"
+    compileSdk = 36
+    defaultConfig {
+        applicationId = "{{ package }}"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+    }
+    buildFeatures { {{ 'compose = true' if ui == 'compose' else 'viewBinding = true' }}; buildConfig = true }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+kotlin { jvmToolchain(17) }
+{% if hilt %}kapt { correctErrorTypes = true }
+{% endif %}dependencies {
+{% if ui == 'compose' %}    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
+{% else %}    implementation(libs.activity.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+{% endif %}    testImplementation(libs.junit)
+{% if hilt %}    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+{% endif %}}

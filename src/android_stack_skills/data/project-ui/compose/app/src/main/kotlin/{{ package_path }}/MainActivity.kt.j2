@@ -1,0 +1,58 @@
+package {{ package }}
+
+import android.os.Bundle
+{% if image == 'glide' %}import android.widget.ImageView
+import androidx.compose.ui.viewinterop.AndroidView
+import {{ package }}.image.loadGlide
+import {{ package }}.image.clearGlide
+{% endif %}
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import {{ package }}.ui.AppTheme
+import {{ package }}.ui.HomeState
+import {{ package }}.ui.HomeViewModel
+{% if hilt %}import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+{% endif %}class MainActivity : ComponentActivity() {
+    private val model: HomeViewModel by viewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            val state by model.state.collectAsStateWithLifecycle()
+            AppTheme {
+                Scaffold { padding ->
+                    Column(Modifier.fillMaxSize().padding(padding).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Text("{{ name }}", style = MaterialTheme.typography.headlineMedium)
+{% if image == 'glide' %}                        AndroidView(
+                            factory = { ImageView(it).apply {
+                                loadGlide(android.R.drawable.ic_menu_gallery)
+                            } },
+                            onReset = null,
+                            onRelease = { it.clearGlide() },
+                            update = {},
+                            modifier = Modifier.size(48.dp),
+                        )
+{% endif %}                        when (val current = state) {
+                            HomeState.Loading -> CircularProgressIndicator()
+                            is HomeState.Ready -> Text(current.message)
+                            HomeState.Error -> {
+                                Text("Could not load this page.")
+                                Button(onClick = model::refresh) { Text("Try again") }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

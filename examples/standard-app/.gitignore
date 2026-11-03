@@ -1,0 +1,10 @@
+.gradle/
+.kotlin/
+**/build/
+local.properties
+.android-stack/*.log
+.android-stack/journal.json
+.android-stack/lock
+.android-stack/verification.json
+
+.idea/

@@ -1,0 +1,7 @@
+[versions]
+compose = "2025.08.01"
+[libraries]
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+material3 = { module = "androidx.compose.material3:material3" }
+activity = { module = "androidx.activity:activity-compose", version = "1.10.1" }
+junit = { module = "junit:junit", version = "4.13.2" }

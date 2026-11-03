@@ -1,0 +1,11 @@
+# Glide images
+
+Import `{{ package }}.image.loadGlide` and call it on the main thread on an `ImageView` from ViewBinding or Compose `AndroidView`. Set the target view's size, scale type and content description for your layout.
+
+```kotlin
+binding.preview.loadGlide(url, placeholder = R.drawable.loading, error = R.drawable.unavailable)
+```
+
+The placeholder appears while loading. The error drawable covers request failures and null models. Both IDs are optional. Glide manages caching, lifecycle and replacement of requests on a reused target. Use `clearGlide()` when recycling a target without a new request or in Compose `AndroidView.onRelease`. In a Fragment, clear a request tied to its view before dropping the binding.
+
+No Application initialization, Glide annotation processor or Compose integration artifact is needed. The Compose preset uses an Android `ImageView` through `AndroidView`.

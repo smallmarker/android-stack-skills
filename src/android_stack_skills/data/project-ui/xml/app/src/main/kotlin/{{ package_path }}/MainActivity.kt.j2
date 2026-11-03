@@ -1,0 +1,41 @@
+package {{ package }}
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import {{ package }}.databinding.ActivityMainBinding
+import {{ package }}.image.loadGlide
+import {{ package }}.ui.HomeState
+import {{ package }}.ui.HomeViewModel
+import kotlinx.coroutines.launch
+{% if hilt %}import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+{% endif %}class MainActivity : ComponentActivity() {
+    private val model: HomeViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.preview.loadGlide(android.R.drawable.ic_menu_gallery)
+        binding.retry.setOnClickListener { model.refresh() }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.state.collect { state ->
+                    binding.progress.isVisible = state == HomeState.Loading
+                    binding.retry.isVisible = state == HomeState.Error
+                    binding.message.text = when (state) {
+                        HomeState.Loading -> ""
+                        is HomeState.Ready -> state.message
+                        HomeState.Error -> getString(R.string.home_error)
+                    }
+                }
+            }
+        }
+    }
+}

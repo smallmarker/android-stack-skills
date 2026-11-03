@@ -1,0 +1,12 @@
+package {{ package }}
+
+import {{ package }}.data.{% if hilt %}DefaultHomeRepository{% else %}HomeRepository{% endif %}
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class HomeRepositoryTest {
+    @Test fun greeting() = runBlocking {
+        assertEquals("Your app is ready.", {% if hilt %}DefaultHomeRepository{% else %}HomeRepository{% endif %}().greeting())
+    }
+}

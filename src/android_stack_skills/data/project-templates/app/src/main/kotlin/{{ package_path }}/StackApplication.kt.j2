@@ -1,0 +1,17 @@
+package {{ package }}
+
+import android.app.Application
+{% if image == 'coil' %}import {{ package }}.image.AppImages
+{% endif %}
+import {{ package }}.logging.AppLogger
+{% if hilt %}import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+{% endif %}class StackApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+    {% if image == 'coil' %}    AppImages.initialize(this)
+{% endif %}
+        AppLogger.initialize(BuildConfig.DEBUG)
+    }
+}
