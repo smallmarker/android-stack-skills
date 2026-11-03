@@ -9,3 +9,5 @@ Each Recipe needs a valid Schema manifest, upstream version/license provenance, 
 Keep changes narrow. Avoid arbitrary Gradle rewriting or silent dependency upgrades. Explain unsupported structures as actionable conflicts. Never embed local SDK paths, secrets or real tokens. Update docs/compatibility.md and docs/progress.md with observed results, including failures.
 
 Suggested commits follow phases: chore/init, feat/engine, feat/recipe, feat/generator, feat/skills, test/verification, docs/delivery. Remote pushes and releases require separate user authorization.
+
+For cross-agent compatibility reports, follow the evidence checklist in [Agent compatibility](docs/agent-compatibility.md). Keep host-specific installation instructions in the docs and use the same Skill instructions across hosts.

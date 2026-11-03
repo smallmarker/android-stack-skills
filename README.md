@@ -1,10 +1,8 @@
 # Android Stack Skills
 
-Production-ready Android stacks, powered by Agent Skills.
+面向多种 Coding Agent 的 Android 开发 Skills，基于经过验证的集成 Recipe。
 
-面向 Android 开发者的确定性技术栈集成工具：Agent 理解需求，Recipe 提供固定实现，Python CLI 生成可审查计划、安全安装，再通过真实 Gradle 构建验证。
-
-V1 的 CLI、三个技术栈 Recipe、Lightweight / Standard 预设和四个 Skills 已实现。真实验证结果与未验证项见 [交付报告](docs/delivery.md) 和 [开发进度](docs/progress.md)。不将“生成成功”等同于“编译成功”。
+项目遵循开放的 [Agent Skills 规范](https://agentskills.io/specification)，面向能访问本地工程文件并执行命令的 Coding Agent。你可以通过自然语言创建工程、集成 Android 技术栈、检查冲突并验证构建。Agent 理解需求，Recipe 提供经过验证的实现，CLI 负责确定性安装和验证。开发者也可以直接使用 CLI。
 
 ## 为什么需要它
 
@@ -12,30 +10,50 @@ V1 的 CLI、三个技术栈 Recipe、Lightweight / Standard 预设和四个 Ski
 
 ## 安装
 
-**Early Preview 0.2.0**。通过 Codex 使用需要分别安装 Agent Skills 和 Python CLI。
+**Early Preview 0.2.0**。Agent Skills 理解请求、选择 Recipe 并组织执行步骤。Android Stack CLI 负责工程生成与检查、安装计划、冲突检测、幂等集成和 Gradle 验证。通过 Agent 使用时请分别安装两层。直接使用时只需安装 CLI。
 
-CLI 需要 Python 3.11+。Android 构建需要 JDK 17、Android SDK Platform 36 / Build Tools 35.0.0 和 Maven / Gradle 网络访问。
+### 安装 Agent Skills
 
-### Agent Skills (Codex)
+在目标项目中运行并选择 Coding Agent。默认安装到项目级。添加 `--global` 可安装到用户级。
 
-在目标 Codex 项目根目录执行以下命令，将四个 Skills 安装到当前 Codex 项目。加上 `--skill android-project` 可只安装工程生成 Skill。
+```sh
+npx skills add smallmarker/android-stack-skills
+```
 
 ```sh
 npx skills add smallmarker/android-stack-skills --agent codex
+npx skills add smallmarker/android-stack-skills --agent claude-code
+npx skills add smallmarker/android-stack-skills --agent cursor
+npx skills add smallmarker/android-stack-skills --agent opencode
+npx skills add smallmarker/android-stack-skills --agent github-copilot
 ```
 
-### Python CLI
+```sh
+npx skills add smallmarker/android-stack-skills --skill android-project
+npx skills add smallmarker/android-stack-skills --skill android-project android-image
+```
+
+使用 `npx skills list --agent <id>` 检查安装结果。查询用户级安装时添加 `--global`。在 Agent 中重新打开目标项目，先请它查找 `android-project`，再尝试执行工作流。安装器输出用于确认文件位置。实际运行证据见 [Agent 兼容性矩阵](docs/agent-compatibility.md)。
+
+### Android Stack CLI
+
+需要 Python 3.11+。Android 构建需要 JDK 17、Android SDK Platform 36 / Build Tools 35.0.0 和 Maven / Gradle 访问权限。若 Agent 找不到 CLI，请运行 `pipx ensurepath`，再从能执行 `android-stack version` 的环境重新启动 Agent。
 
 ```sh
 pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
-android-stack --help
 android-stack version
 android-stack recipes list
 ```
 
-也可在独立虚拟环境中安装本地构建的 wheel。 `android_stack_skills-0.2.0-py3-none-any.whl`
+## 自然语言示例
 
-若 Codex 找不到 Skill，请确认在目标项目内安装并重新打开会话。若找不到 `android-stack`，请检查 `pipx ensurepath` 并重启启动 Codex 的终端。依赖冲突时先查看 `android-stack plan` 的输出。
+请 Agent 使用已安装的 CLI 和内置 Recipe 执行这些工作流。
+
+> 创建一个 Kotlin Android 项目，使用 XML + ViewBinding、Standard MVVM、Glide、Retrofit、Timber 和 Hilt，并运行构建验证。
+
+> 检查当前 Android 项目，安全集成 Retrofit + OkHttp，保留已有依赖和源码，先展示安装计划，再执行集成与验证。
+
+> 检查当前项目使用 Compose 还是 XML，并根据已有图片库选择合适的图片加载 Recipe，保留已有技术栈。
 
 ## 创建工程
 

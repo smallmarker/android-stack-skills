@@ -1,5 +1,7 @@
 # Compatibility
 
+This page tracks Android tooling and dependency compatibility. See [Agent compatibility](agent-compatibility.md) for installer and host runtime evidence.
+
 Version audit and validation date: **2026-11-02**. Newest stable does not automatically become the tested baseline. The older stable pins below deliberately retain AGP 8 / explicit Kotlin Android support and OkHttp 4 APIs. Existing versions are never silently replaced.
 
 | Component | Fixed V1 baseline | Newest stable observed | Primary source |

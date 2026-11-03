@@ -1,35 +1,55 @@
 # Android Stack Skills
 
-Production-ready Android stacks, powered by Agent Skills.
+Agent-agnostic Android development skills powered by verified integration recipes.
 
-A deterministic Android integration toolkit: agents interpret requests, Recipes provide fixed Kotlin implementations, and the CLI inspects, plans, installs and validates changes. Repeated installations preserve files; conflicts stop automatic changes. See [delivery evidence and open items](docs/delivery.md).
+Built on the open [Agent Skills specification](https://agentskills.io/specification) for coding agents that can access local project files and run commands. Use natural language to scaffold projects, integrate Android libraries, inspect conflicts and verify builds. The agent interprets the request, Recipes supply verified implementations, and the CLI applies and validates changes deterministically. Developers can also run the CLI directly.
 
 ## Install
 
-**Early Preview 0.2.0**. Using this toolkit from Codex requires two separate installations, the Agent Skills and the Python CLI.
+**Early Preview 0.2.0.** Agent Skills interpret requests, select Recipes and organize the workflow. The Android Stack CLI generates and inspects projects, plans changes, detects conflicts, applies Recipes idempotently and verifies builds with Gradle. Install both layers to use an agent. Install the CLI alone for direct use.
 
-The CLI requires Python 3.11+. Android builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0 and Maven / Gradle access.
+### Install Agent Skills
 
-### Agent Skills (Codex)
+Run this from the target project and select your coding agent. Installation is project-level by default. Add `--global` for user-level installation.
 
-Run the following from the intended project root to install all four Skills for the current Codex project. Add `--skill android-project` to install only the project scaffolding Skill.
+```sh
+npx skills add smallmarker/android-stack-skills
+```
 
 ```sh
 npx skills add smallmarker/android-stack-skills --agent codex
+npx skills add smallmarker/android-stack-skills --agent claude-code
+npx skills add smallmarker/android-stack-skills --agent cursor
+npx skills add smallmarker/android-stack-skills --agent opencode
+npx skills add smallmarker/android-stack-skills --agent github-copilot
 ```
 
-### Python CLI
+```sh
+npx skills add smallmarker/android-stack-skills --skill android-project
+npx skills add smallmarker/android-stack-skills --skill android-project android-image
+```
+
+Use `npx skills list --agent <id>` to inspect installed files. Add `--global` to list user-level installations. Reopen the target project in the agent and ask it to find `android-project` before trying a workflow. Installer output verifies placement. See the [agent compatibility matrix](docs/agent-compatibility.md) for runtime evidence.
+
+### Android Stack CLI
+
+Python 3.11+ is required. Android builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0 and Maven/Gradle access. If the agent cannot find the CLI, run `pipx ensurepath` and reopen it from an environment that can run `android-stack version`.
 
 ```sh
 pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
-android-stack --help
 android-stack version
 android-stack recipes list
 ```
 
-You can also install the locally built wheel in a dedicated virtual environment. `android_stack_skills-0.2.0-py3-none-any.whl`
+## Natural-language examples
 
-If Codex cannot find the Skills, check that they were installed for the intended project and reopen the session. If `android-stack` is missing, run `pipx ensurepath` and restart the terminal that launches Codex. For dependency conflicts, inspect the output of `android-stack plan`.
+Ask the agent to use the installed CLI and bundled Recipes for these workflows.
+
+> Create a Kotlin Android project with XML + ViewBinding, Standard MVVM, Glide, Retrofit, Timber and Hilt, then verify the build.
+
+> Inspect this Android project and integrate Retrofit + OkHttp while preserving dependencies and source. Show me the plan before applying and verifying it.
+
+> Check whether this project uses Compose or XML. Choose an image Recipe that preserves the existing image library.
 
 ## Create
 

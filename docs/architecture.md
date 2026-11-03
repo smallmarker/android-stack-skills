@@ -1,5 +1,7 @@
 # Architecture
 
+The Skill layer uses the open Agent Skills format. Hosts provide project file access and command execution. The CLI owns the workflow from inspection through validation and can also run directly.
+
 The execution flow is **Skill → Inspector → Resolver → Plan → Installer → Validator**.
 
 - Skill: routes intent to CLI, handles initialization in existing application code, interprets conflicts and actual build results.
