@@ -1,6 +1,6 @@
 # Agent compatibility
 
-The same four Skills follow the open [Agent Skills specification](https://agentskills.io/specification). The host needs to discover and read `SKILL.md`, access the local Android project, execute `android-stack` and use command results to continue or report failures. The CLI and its bundled Recipes work independently of the agent. Android builds also require the environment listed in the [installation guide](../README_EN.md#android-stack-cli).
+The same four Skills follow the open [Agent Skills specification](https://agentskills.io/specification). The host needs to discover and read `SKILL.md`, access the local Android project, execute `android-stack` and use command results to continue or report failures. The CLI and its bundled Recipes work independently of the agent. Android builds also require the environment listed in the [installation guide](../README_EN.md#2-install-android-stack-cli).
 
 | Coding agent | Installer file placement | Natural-language trigger | CLI invocation | Android build |
 |---|---|---|---|---|

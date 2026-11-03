@@ -1,20 +1,83 @@
 # Android Stack Skills
 
+[简体中文](README.md)
+
 Agent-agnostic Android development skills powered by verified integration recipes.
 
-Built on the open [Agent Skills specification](https://agentskills.io/specification) for coding agents that can access local project files and run commands. Use natural language to scaffold projects, integrate Android libraries, inspect conflicts and verify builds. The agent interprets the request, Recipes supply verified implementations, and the CLI applies and validates changes deterministically. Developers can also run the CLI directly.
+Scaffold Kotlin Android projects, integrate libraries into existing apps, and run Gradle verification from natural-language requests. The Skills follow the open [Agent Skills specification](https://agentskills.io/specification) and require a host that can access local project files and run commands.
 
-## Install
+## Why Android Stack Skills
 
-**Early Preview 0.2.0.** Agent Skills interpret requests, select Recipes and organize the workflow. The Android Stack CLI generates and inspects projects, plans changes, detects conflicts, applies Recipes idempotently and verifies builds with Gradle. Install both layers to use an agent. Install the CLI alone for direct use.
+The agent interprets the request, Recipes supply verified implementations, and the CLI applies and verifies changes deterministically. Fixed implementations and dependency versions make results reproducible, and the plan lets you review changes and conflicts before applying them.
 
-### Install Agent Skills
+## Quick Start
 
-Run this from the target project and select your coding agent. Installation is project-level by default. Add `--global` for user-level installation.
+Install the Skills and CLI separately for agent use. For direct command-line use, install the CLI alone.
+
+### 1. Install Agent Skills
+
+Requires Node.js and npm. Run this in the target project directory and select your coding agent.
 
 ```sh
 npx skills add smallmarker/android-stack-skills
 ```
+
+### 2. Install Android Stack CLI
+
+Requires Python 3.11+ and pipx. After installation, run the checks below from the environment the agent uses to execute commands. If the CLI is missing, run `pipx ensurepath` and restart the host.
+
+```sh
+pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
+android-stack version
+android-stack recipes list
+```
+
+### 3. Start using the Skills
+
+Send the request below to your agent. Builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0, and access to Gradle and Maven dependencies.
+
+> Use Android Stack Skills to create a Kotlin Android project with XML + ViewBinding, Standard MVVM, Glide, Retrofit, Timber, and Hilt, then run Gradle build verification.
+
+## Features & Supported Stacks
+
+- **Lightweight** uses single-module Kotlin + MVVM with direct repository construction.
+- **Standard** adds Hilt and a repository interface with its implementation.
+- Both presets integrate Retrofit + OkHttp, Timber, and the selected image library, and share ViewModel and StateFlow.
+
+| UI | Image loading |
+|---|---|
+| Compose | Coil (default) |
+| XML + ViewBinding | Glide (default) |
+| Compose | Glide (explicit selection via AndroidView) |
+| XML + ViewBinding | The current Coil Recipe provides a Compose API only |
+
+The XML + Coil limitation comes from this project’s `coil-standard` Recipe. Coil itself also supports Android Views.
+
+## Create a Project
+
+```sh
+android-stack create --name StandardDemo --package com.example.standard --preset standard --ui xml --output ./StandardDemo
+```
+
+Compose is the default UI. To use Glide with Compose, pass `--ui compose --image glide`. Creation runs `assembleDebug` and `testDebugUnitTest` by default and preserves the project and logs if verification fails. Use `--skip-verify` to generate an unverified project. Existing output directories are protected.
+
+Open the [Lightweight example](examples/lightweight-app) or [Standard example](examples/standard-app) in Android Studio.
+
+## Integrate Existing Projects
+
+```sh
+android-stack inspect --project ./MyApp --json
+android-stack plan --project ./MyApp --recipe retrofit-standard
+android-stack install --project ./MyApp --recipe retrofit-standard --verify
+```
+
+Use the same workflow with `coil-standard`, `glide-standard`, and `timber-standard`. In multi-module projects, select the target module with `--module :app`. Check `image_libraries` in the inspection output to choose a Recipe for the existing library, then follow the generated `app/android-stack/*/Usage.md` for initialization.
+
+Planning is read-only. The CLI reuses matching dependency versions and stops on dependency or source conflicts. Repeated installs verify existing content and leave files intact. Existing projects require Kotlin DSL and a literal namespace and minSdk. The Network and Image Recipes require INTERNET permission.
+
+## Supported Coding Agents
+
+Codex has been verified for installation, natural-language triggers, CLI calls, and Android builds. Installer file placement has been verified for Claude Code, Cursor, OpenCode, and GitHub Copilot. Their full workflows are pending verification. See the [agent compatibility matrix](docs/agent-compatibility.md).
 
 ```sh
 npx skills add smallmarker/android-stack-skills --agent codex
@@ -24,99 +87,39 @@ npx skills add smallmarker/android-stack-skills --agent opencode
 npx skills add smallmarker/android-stack-skills --agent github-copilot
 ```
 
+Installation defaults to the current project. Add `--global` for user-level installation, or use `--skill` to select a single Skill.
+
 ```sh
 npx skills add smallmarker/android-stack-skills --skill android-project
-npx skills add smallmarker/android-stack-skills --skill android-project android-image
+npx skills list --agent codex
 ```
 
-Use `npx skills list --agent <id>` to inspect installed files. Add `--global` to list user-level installations. Reopen the target project in the agent and ask it to find `android-project` before trying a workflow. Installer output verifies placement. See the [agent compatibility matrix](docs/agent-compatibility.md) for runtime evidence.
+Add `--global` to the `list` command to inspect user-level installations. Reopen the target project and ask your agent to find `android-project` to confirm host discovery.
 
-### Android Stack CLI
+## Advanced Installation
 
-Python 3.11+ is required. Android builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0 and Maven/Gradle access. If the agent cannot find the CLI, run `pipx ensurepath` and reopen it from an environment that can run `android-stack version`.
+### Manual Installation (Advanced)
+
+Copy each complete Skill directory from the repository’s `skills/` folder to the location documented by your host. For example, Codex can use `.agents/skills/` in the project or `~/.agents/skills/` at user scope. Follow your host’s discovery paths and review existing directories with the same names before copying.
+
+If you installed from a wheel, locate the bundled Skills using the Python environment that contains the CLI.
 
 ```sh
-pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
-android-stack version
-android-stack recipes list
+python -c 'from importlib.resources import files; print(files("android_stack_skills").joinpath("data", "skills"))'
 ```
 
-## Natural-language examples
+## Compatibility & Limitations
 
-Ask the agent to use the installed CLI and bundled Recipes for these workflows.
+The tested baseline is AGP 8.13.1, Gradle 8.14.3, Kotlin 2.2.20, and Compose BOM 2025.08.01 on macOS arm64 with JDK 17. Generated apps support Android API 26+. Manual checks of Android Studio, devices, and image rendering for XML / Glide are pending.
 
-> Create a Kotlin Android project with XML + ViewBinding, Standard MVVM, Glide, Retrofit, Timber and Hilt, then verify the build.
+Automatic integration excludes Groovy writes, AGP 9 built-in Kotlin, dynamic dependencies and bundles, custom projectDir / includeBuild, complex convention plugins, multiplatform migration, and automatic merging of existing ImageLoader setups. See the [testing guide](docs/testing.md) for build logs and recovery guidance.
 
-> Inspect this Android project and integrate Retrofit + OkHttp while preserving dependencies and source. Show me the plan before applying and verifying it.
+Build logs are saved to `.android-stack/verification.log`. After an interrupted install, confirm no other process holds the installer lock, then run `android-stack recover --project ./MyApp`. Recovery protects edits made after the interruption.
 
-> Check whether this project uses Compose or XML. Choose an image Recipe that preserves the existing image library.
+The Early Preview source is public on GitHub under `main` and the [`v0.2.0` tag](https://github.com/smallmarker/android-stack-skills/tree/v0.2.0). Install from Git. GitHub Releases and PyPI packages are pending.
 
-## Create
+## Documentation & Contributing
 
-```sh
-export ANDROID_HOME=/path/to/android/sdk
-android-stack create --name DemoApp --package com.example.demo --preset lightweight --output ./DemoApp
-android-stack create --name StandardDemo --package com.example.standard --preset standard --ui xml --output ./StandardDemo
-android-stack create --name GlideCompose --package com.example.glidecompose --ui compose --image glide --output ./GlideCompose
-```
+[Architecture](docs/architecture.md) · [Android compatibility](docs/compatibility.md) · [Recipe spec](docs/recipe-spec.md) · [Testing](docs/testing.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](docs/roadmap.md)
 
-Compose is the default UI. When `--image` is omitted, Compose uses Coil and XML uses Glide. Compose + Glide uses an ImageView through AndroidView. XML + Coil is rejected before output creation because the current Coil Recipe provides a Compose API.
-
-Both UIs share MVVM, StateFlow, Repository, Network and Logging. The XML Activity uses ViewBinding and collects state while started. Standard adds Hilt and a repository interface with its implementation.
-
-Creation runs real Gradle build/tests by default. `--skip-verify` explicitly generates unverified output. Existing output directories are protected. Generation errors clean newly created output; build failures preserve the project and full logs.
-
-## Integrate existing projects
-
-```sh
-android-stack inspect --project ./MyApp --json
-android-stack plan --project ./MyApp --recipe retrofit-standard
-android-stack install --project ./MyApp --recipe retrofit-standard --verify
-android-stack install --project ./MyApp --recipe coil-standard --verify
-android-stack install --project ./MyApp --recipe timber-standard --verify
-android-stack status --project ./MyApp
-android-stack verify --project ./MyApp
-```
-
-Use `--module :app` for multiple Android modules. `plan` and `install --dry-run` are read-only. `--json` emits structured reports. Installation without `--verify` reports **installed-unverified**. Matching dependency versions are reused; different/unknown versions, existing generated files or conflicting Kotlin declarations block installation.
-
-Existing projects require Kotlin DSL, a literal namespace/minSdk, and INTERNET permission for network/images. Coil requires explicitly enabled Compose. The installer appends a bounded dependencies block instead of rewriting arbitrary Gradle programs. It preserves Application code: follow the generated `app/android-stack/*/Usage.md` for initialization.
-
-```kotlin
-val api = HttpClientFactory.retrofit(NetworkConfig("https://api.example.com/"))
-    .create(UserApi::class.java)
-val result = UserRepository(api).getUser() // inside a coroutine
-// Application.onCreate:
-AppImages.initialize(this)
-AppLogger.initialize(BuildConfig.DEBUG)
-// Compose:
-AppImage(url = avatarUrl, shape = CircleShape, contentDescription = "User avatar")
-AppLogger.d("Home", "Page created")
-```
-
-Hilt integrations require application bindings for NetworkConfig and TokenProvider; Standard includes examples. Network cancellation propagates, errors expose no response bodies or credentials, and production clients require HTTPS. AppImage provides shared caching, shape/scaling, Painter placeholders/errors and loading/failure slots. Logger release calls are silent. Free text is for static developer messages; dynamic fields use a typed allowlist. Arbitrary-text sanitization is not promised.
-
-For existing projects, check the selected module's `image_libraries` in `inspect`. Keep the existing library and version. Plans block an alternative image library or a version conflict. Use `android-stack plan --project ./MyApp --recipe glide-standard` and then `android-stack install --project ./MyApp --recipe glide-standard --verify` to install Glide. Use `binding.preview.loadGlide(url)` from a ViewBinding Activity, or use the same extension on an AndroidView ImageView. See the [compatibility matrix](docs/compatibility.md#v11-ui-与图片库).
-
-## Agent Skills
-
-For wheel-only installations, locate bundled Skills with `python -c 'from importlib.resources import files; print(files("android_stack_skills").joinpath("data", "skills"))'`.
-
-Install the CLI first, then copy the four folders from `skills/` to `<project>/.agents/skills/` or `~/.agents/skills/`. Inspect any existing same-named folders before copying. Codex paths were checked against [official OpenAI documentation](https://learn.chatgpt.com/docs/build-skills) on 2026-11-02; other agents have their own discovery paths. Restart the host if discovery does not update.
-
-- [android-project](skills/android-project/SKILL.md): new Compose or XML/MVVM applications.
-- [android-network](skills/android-network/SKILL.md): Retrofit/OkHttp, status and conflicts.
-- [android-image](skills/android-image/SKILL.md): Coil/AppImage and Glide/ImageView.
-- [android-logging](skills/android-logging/SKILL.md): Timber/AppLogger.
-
-Example requests: “Create a Standard Android project”, “Install Retrofit”, “Add Coil image loading”, “Set up logging”, “Check installed networking”, “Install again”, “Resolve an existing Retrofit version conflict”. Frontmatter and isolated Codex session results are recorded in the [RC report](docs/delivery.md); other Agent hosts are not certified.
-
-## Compatibility and recovery
-
-Tested baseline: AGP 8.13.1, Gradle 8.14.3, Kotlin 2.2.20, Compose BOM 2025.08.01, macOS arm64 and JDK 17. See [pinned versions and latest-version audit](docs/compatibility.md).
-
-V1 excludes Groovy writes, AGP 9 built-in Kotlin, dynamic dependencies/bundles, custom projectDir/includeBuild, complex convention plugins, multiplatform migration and automatic merging of existing ImageLoader setups. No remote repository or release has been published.
-
-Interrupted writes leave `.android-stack/journal.json`. After confirming no other process is active, `android-stack recover --project ./MyApp` restores recorded files while protecting subsequent edits. Build logs remain in `.android-stack/verification.log`. No failed compilation is reported as successful integration.
-
-[Architecture](docs/architecture.md) · [Recipe spec](docs/recipe-spec.md) · [Testing](docs/testing.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](docs/roadmap.md) · [中文](README.md)
+[android-project](skills/android-project/SKILL.md) · [android-network](skills/android-network/SKILL.md) · [android-image](skills/android-image/SKILL.md) · [android-logging](skills/android-logging/SKILL.md)
