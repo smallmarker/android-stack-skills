@@ -12,34 +12,55 @@ Agent 理解需求，Recipe 提供经过验证的实现，CLI 负责确定性安
 
 ## 快速开始
 
-通过 Agent 使用时，分别安装 Skills 和 CLI。直接使用命令行时，只需安装 CLI。
+**安装 Skill 只添加 Skill 文件。** 需要执行 Recipe 时，Agent 才检查或准备 Python CLI。
 
-### 1. 安装 Agent Skills
+### 1. 通过 AI Agent 安装
 
-需要 Node.js 和 npm。在目标项目目录运行，然后选择你的 Coding Agent。
+在目标工程的 Codex 会话中发送这段提示。可以选择一个、多个或全部 Skill，并指定项目级或用户级。
+
+> 帮我安装 https://github.com/smallmarker/android-stack-skills 中的 Skills。请先列出全部技能及用途，让我选择。等我确认技能和安装范围后，只安装选中的 Skill 文件。保留已有同名修改。暂不准备 Python CLI。
+
+### 2. 安装指定 Skill
+
+复制所需 Skill 的提示。SkillsMP 提示默认采用项目级安装。需要用户级安装时，在提示中明确说明。
+
+**android-project**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-project.
+
+**android-network**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-network.
+
+**android-image**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-image.
+
+**android-logging**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-logging.
+
+### 3. 通过 npx 安装
+
+在目标工程目录运行，需要 Node.js 和 npm。
 
 ```sh
 npx skills add smallmarker/android-stack-skills
 ```
 
-### 2. 安装 Android Stack CLI
-
-需要 Python 3.11+ 和 pipx。安装后，在 Agent 能执行命令的环境中运行下列检查。若找不到 CLI，运行 `pipx ensurepath` 后重新启动宿主。
+交互终端可选择 Skill 和目标 Agent。部分 Agent 环境会自动安装全部 Skill。要明确指定 Codex 和一个 Skill，可以使用：
 
 ```sh
-pipx install git+https://github.com/smallmarker/android-stack-skills.git@main
-android-stack version
-android-stack recipes list
-android-stack capabilities --json
+npx skills add smallmarker/android-stack-skills --agent codex --skill android-network
 ```
 
-此命令安装当前开发版 CLI。Skills 会在修改工程前检查 CLI 与 Recipe 的兼容性。缺少兼容 CLI 时，Skills 会引导准备，并在安装前征求批准。详见 [能力协议](docs/agent-compatibility.md#能力协议)。
+有意安装到用户范围时加 `--global`。重复安装前先检查同名目录，npx 可能覆盖本地改动。Codex 的项目级与用户级目录分别为 `.agents/skills/` 和 `~/.agents/skills/`。新开会话即可检查已安装的 Skill。实测见 [Prompt 安装验收](docs/skill-installation.md)。
 
-### 3. 开始使用
+### 4. 开始使用
 
-将下面的请求发给 Agent。构建需要配置 JDK 17、Android SDK Platform 36 / Build Tools 35.0.0，并能访问 Gradle 和 Maven 依赖。
+> 请为当前项目集成 Retrofit + OkHttp，保留原有 Kotlin、AGP、Gradle 和源码目录结构。
 
-> 使用 Android Stack Skills 创建一个 Kotlin Android 项目，采用 XML + ViewBinding、Standard MVVM、Glide、Retrofit、Timber 和 Hilt，并运行 Gradle 构建验证。
+收到实际操作请求后，Agent 会用 `android-stack capabilities --json` 检查可信 CLI。缺少兼容 CLI 时，Agent 会说明固定的 GitHub 提交、独立环境路径和安装影响，获得批准后才安装。Android 构建需要 JDK 17、Android SDK Platform 36 / Build Tools 35.0.0，以及 Gradle 和 Maven 依赖访问权限。 [CLI 准备指南](skills/android-network/cli-setup.md)
 
 ## 功能与技术栈
 

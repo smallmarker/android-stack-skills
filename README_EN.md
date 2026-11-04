@@ -12,34 +12,55 @@ The agent interprets the request, Recipes supply verified implementations, and t
 
 ## Quick Start
 
-Install the Skills and CLI separately for agent use. For direct command-line use, install the CLI alone.
+**Installing a Skill adds only its files.** The agent checks or prepares the Python CLI when you request a Recipe operation.
 
-### 1. Install Agent Skills
+### 1. Install with an AI Agent
 
-Requires Node.js and npm. Run this in the target project directory and select your coding agent.
+Send this prompt to Codex in the target project. Choose one, several, or all Skills and specify project or user scope.
+
+> Help me install the Skills from https://github.com/smallmarker/android-stack-skills. First list all Skills and what they do so I can choose. Wait for my selection and scope, then install only those Skill files. Preserve any modified copies and leave Python CLI setup for later.
+
+### 2. Install a Specific Skill
+
+Copy the prompt for the Skill you want. The SkillsMP prompt defaults to project scope. Explicitly request user scope if you want it.
+
+**android-project**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-project.
+
+**android-network**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-network.
+
+**android-image**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-image.
+
+**android-logging**
+
+> Follow https://skillsmp.com/skill-install/prompt.md to install only the Agent Skill at https://github.com/smallmarker/android-stack-skills/tree/main/skills/android-logging.
+
+### 3. Install with npx
+
+Run from the target project with Node.js and npm.
 
 ```sh
 npx skills add smallmarker/android-stack-skills
 ```
 
-### 2. Install Android Stack CLI
-
-Requires Python 3.11+ and pipx. After installation, run the checks below from the environment the agent uses to execute commands. If the CLI is missing, run `pipx ensurepath` and restart the host.
+An interactive terminal can prompt for Skills and target agents. Some agent environments install all Skills automatically. To explicitly choose Codex and one Skill, use:
 
 ```sh
-pipx install git+https://github.com/smallmarker/android-stack-skills.git@main
-android-stack version
-android-stack recipes list
-android-stack capabilities --json
+npx skills add smallmarker/android-stack-skills --agent codex --skill android-network
 ```
 
-This installs the current development CLI. The Skills check CLI and Recipe compatibility before changing a project. If a compatible CLI is missing, they guide you through preparation and request approval before installing it. See the [capability protocol](docs/agent-compatibility.md#能力协议).
+Add `--global` for a user-scoped installation. Check same-named directories before repeating an installation because npx can replace local edits. Codex uses `.agents/skills/` for project scope and `~/.agents/skills/` for user scope. Open a fresh session to check discovery. See the [Prompt installation results](docs/skill-installation.md).
 
-### 3. Start using the Skills
+### 4. Start Using
 
-Send the request below to your agent. Builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0, and access to Gradle and Maven dependencies.
+> Integrate Retrofit + OkHttp into this project while preserving its Kotlin, AGP, Gradle, and source directory layout.
 
-> Use Android Stack Skills to create a Kotlin Android project with XML + ViewBinding, Standard MVVM, Glide, Retrofit, Timber, and Hilt, then run Gradle build verification.
+When you request a Recipe operation, the agent checks a trusted CLI with `android-stack capabilities --json`. If a compatible CLI is missing, the agent presents the pinned GitHub commit, isolated environment path, and installation effects, then asks for approval before installing. Android builds require JDK 17, Android SDK Platform 36 / Build Tools 35.0.0, and access to Gradle and Maven dependencies. [CLI setup guide](skills/android-network/cli-setup.md)
 
 ## Features & Supported Stacks
 

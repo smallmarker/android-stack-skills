@@ -1,0 +1,159 @@
+{
+  "source_commit": "900b57f8ff78ba1048c2ded4475e8c5bfc8f4210",
+  "codex": "0.166.0-alpha.6",
+  "npx_skills": "1.7.6",
+  "source_sha256": {
+    "android-image": {
+      "cli-setup.md": "a8e966dd83c740e4bd984befd84580736eaaebc83b54b6d1e51606ce882ca7ad",
+      "cli-requirements.json": "67c6f7ddd3ed29b438449454986b5993a695aeaf6a97714dc96d417c130e88ff",
+      "SKILL.md": "e86660a7869b8057ba18ea84d64052c945106b07c85c55c41652af4b3455b407"
+    },
+    "android-logging": {
+      "cli-setup.md": "a8e966dd83c740e4bd984befd84580736eaaebc83b54b6d1e51606ce882ca7ad",
+      "cli-requirements.json": "2210bd49ef9c27da9f33e6d3832d9d07275df5c6e412a4120fe91fdbc237b5cd",
+      "SKILL.md": "8e19ceaed9bb119f02d5a42bea9370a2ec730bda353889bba4967c543a0b2ec8"
+    },
+    "android-network": {
+      "cli-setup.md": "a8e966dd83c740e4bd984befd84580736eaaebc83b54b6d1e51606ce882ca7ad",
+      "cli-requirements.json": "b3d7a3993dcec5f88b5240d4eb6b4ced097956fba9274ec3b140e33974d1607b",
+      "SKILL.md": "6a3134d6947663044efd6b273df682b21e6ab70ea713c2ce41b5324a27748931",
+      "scripts/cli_gate.py": "97363e23e407f5f0064e781ce22ac95092d02fbaf1d5c058e33a45f0059c4c51"
+    },
+    "android-project": {
+      "cli-setup.md": "a8e966dd83c740e4bd984befd84580736eaaebc83b54b6d1e51606ce882ca7ad",
+      "cli-requirements.json": "a6e82c839288e531b37a53f49375800c186d7a8d8a260e2c9517ede5f4b71cd2",
+      "SKILL.md": "a95249035977b947912d04378040e5e6dd7d20e74a4e8f9de87e7a0f9b8c08d2"
+    }
+  },
+  "copy_checks": {
+    "codex-single-network": {
+      "result": "PASS",
+      "skills": [
+        "android-network"
+      ],
+      "file_count": 4
+    },
+    "codex-single-project": {
+      "result": "PASS",
+      "skills": [
+        "android-project"
+      ],
+      "file_count": 3
+    },
+    "codex-single-image": {
+      "result": "PASS",
+      "skills": [
+        "android-image"
+      ],
+      "file_count": 3
+    },
+    "codex-single-logging": {
+      "result": "PASS",
+      "skills": [
+        "android-logging"
+      ],
+      "file_count": 3
+    },
+    "codex-user-scope": {
+      "result": "PASS",
+      "skills": [
+        "android-logging"
+      ],
+      "file_count": 3
+    },
+    "codex-selected-two": {
+      "result": "PASS",
+      "skills": [
+        "android-image",
+        "android-project"
+      ],
+      "file_count": 6
+    },
+    "codex-all": {
+      "result": "PASS",
+      "skills": [
+        "android-image",
+        "android-logging",
+        "android-network",
+        "android-project"
+      ],
+      "file_count": 13
+    },
+    "npx-auto-detect": {
+      "result": "PASS",
+      "skills": [
+        "android-image",
+        "android-logging",
+        "android-network",
+        "android-project"
+      ],
+      "file_count": 13
+    },
+    "npx-selected-two": {
+      "result": "PASS",
+      "skills": [
+        "android-image",
+        "android-project"
+      ],
+      "file_count": 6
+    },
+    "npx-user-scope": {
+      "result": "PASS",
+      "skills": [
+        "android-logging"
+      ],
+      "file_count": 3
+    }
+  },
+  "codex_runs": {
+    "single/session": {
+      "shell_commands": 7
+    },
+    "single/discovery": {
+      "shell_commands": 1
+    },
+    "choose/session": {
+      "shell_commands": 3
+    },
+    "choose/cancel": {
+      "shell_commands": 0
+    },
+    "choose/selected": {
+      "shell_commands": 3
+    },
+    "all/session": {
+      "shell_commands": 7
+    },
+    "global/session": {
+      "shell_commands": 5
+    },
+    "global/discovery": {
+      "shell_commands": 2
+    },
+    "skill-image/session": {
+      "shell_commands": 7
+    },
+    "image-retry/session": {
+      "shell_commands": 5
+    },
+    "logging-project/session": {
+      "shell_commands": 7
+    },
+    "skill-project/session": {
+      "shell_commands": 7
+    },
+    "collision/session": {
+      "shell_commands": 7
+    },
+    "global/discovery-isolated": {
+      "shell_commands": 1,
+      "result": "PASS",
+      "used_temporary_user_skill": true
+    }
+  },
+  "collision_and_cancel": {
+    "prompt_preserved_edit": true,
+    "npx_overwrote_fixture_edit": true,
+    "npx_interactive_cancel_wrote_no_files": true
+  }
+}
