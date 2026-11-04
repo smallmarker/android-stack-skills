@@ -1,0 +1,95 @@
+{
+  "A": {
+    "result": "PASS",
+    "skill_read": true,
+    "commands": [
+      {
+        "command": "/bin/zsh -c \"export PATH=/opt/homebrew/bin:/usr/bin:/bin; pwd; ls -a; cat .agents/skills/android-network/SKILL.md; rg --files --hidden -g 'candidate-artifact.json' -g '\"'!**/.git/**'\"'\"",
+        "exit_code": 127,
+        "selected_output": [
+          "6. Install with `android-stack install --project <path> --recipe retrofit-standard` when clear of blockers. Stop on an incompatible toolchain, existing dependency mismatch or source conflict. Preserve existing files and propose a tested alternative or isolated reproduction. For any proposed Kotlin, AGP or Gradle upgrade, show old/new versions, affected build files, plugin and SDK impacts, CI implications and a rollback path. Obtain explicit user approval before changing versions. Keep the Installer checks active. A second install should report already-installed. Use the generated Usage.md for optional Hilt bindings and application-owned endpoint configuration."
+        ]
+      },
+      {
+        "command": "/bin/zsh -c \"export PATH=/opt/homebrew/bin:/usr/bin:/bin\ncat .agents/skills/android-network/cli-requirements.json .agents/skills/android-network/cli-setup.md candidate-artifact.json\ncommand -v android-stack; printf 'android-stack lookup exit=%s\\\\n' \\\"\"'$?\"\ncommand -v python3; python3 --version'",
+        "exit_code": 0,
+        "selected_output": [
+          "}android-stack lookup exit=1"
+        ]
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/opt/homebrew/bin:/usr/bin:/bin\nbundle=/tmp/android-stack-phase2.z72y2h/bundle\nshasum -a 256 \"$bundle/release-manifest.json\"; cat \"$bundle/release-manifest.json\"; ls \"$bundle/locks\"; uname -sm; /opt/homebrew/bin/python3.11 --version'",
+        "exit_code": 0,
+        "selected_output": []
+      }
+    ],
+    "approval": "Requested, no approval given",
+    "existing_android_files_unchanged": true
+  },
+  "B": {
+    "result": "PASS",
+    "skill_read": true,
+    "commands": [
+      {
+        "command": "/bin/zsh -c \"export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncat .agents/skills/android-network/SKILL.md\ngit status --short\nrg --files -g '\"'!gradlew*'\"' | head -80\n\"",
+        "exit_code": 0,
+        "selected_output": [
+          "6. Install with `android-stack install --project <path> --recipe retrofit-standard` when clear of blockers. Stop on an incompatible toolchain, existing dependency mismatch or source conflict. Preserve existing files and propose a tested alternative or isolated reproduction. For any proposed Kotlin, AGP or Gradle upgrade, show old/new versions, affected build files, plugin and SDK impacts, CI implications and a rollback path. Obtain explicit user approval before changing versions. Keep the Installer checks active. A second install should report already-installed. Use the generated Usage.md for optional Hilt bindings and application-owned endpoint configuration."
+        ]
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncat .agents/skills/android-network/{cli-requirements.json,cli-setup.md}; ls -la; command -v android-stack; android-stack capabilities --json'",
+        "exit_code": 0,
+        "selected_output": [
+          "  \"module\": \"<phase2-test-root>/approved/lib/python3.11/site-packages/android_stack_skills/capabilities.py\","
+        ]
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncli=/tmp/android-stack-phase2.z72y2h/approved/bin/android-stack\n\"$cli\" capabilities --json >/dev/null\n\"$cli\" inspect --project \"$PWD\" --json\n\"$cli\" status --project \"$PWD\"\n\"$cli\" plan --project \"$PWD\" --recipe retrofit-standard --json\ncat AGENTS.md'",
+        "exit_code": 0,
+        "selected_output": []
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncli=/tmp/android-stack-phase2.z72y2h/approved/bin/android-stack\ncat app/src/main/AndroidManifest.xml; cat gradlew\n\"$cli\" install --project \"$PWD\" --recipe retrofit-standard\n\"$cli\" verify --project \"$PWD\"'",
+        "exit_code": 1,
+        "selected_output": []
+      },
+      {
+        "command": "/bin/zsh -c \"export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\nhead -60 .android-stack/verification.log; java -version; env | grep -E '\"'^(JAVA_HOME|ANDROID_HOME|ANDROID_SDK_ROOT|GRADLE_USER_HOME)='\"'\"",
+        "exit_code": 0,
+        "selected_output": [
+          "   > java.net.SocketException: Operation not permitted"
+        ]
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncli=/tmp/android-stack-phase2.z72y2h/approved/bin/android-stack\n\"$cli\" verify --project \"$PWD\"'",
+        "exit_code": 0,
+        "selected_output": []
+      },
+      {
+        "command": "/bin/zsh -c 'export PATH=/tmp/android-stack-phase2.z72y2h/approved/bin:/opt/homebrew/bin:/usr/bin:/bin\ncli=/tmp/android-stack-phase2.z72y2h/approved/bin/android-stack\n\"$cli\" install --project \"$PWD\" --recipe retrofit-standard\ntail -12 .android-stack/verification.log\ngrep '\"'<testsuite ' app/build/test-results/testDebugUnitTest/TEST-*.xml\"",
+        "exit_code": 0,
+        "selected_output": [
+          "  \"status\": \"already-installed\",",
+          "BUILD SUCCESSFUL in 6s"
+        ]
+      }
+    ],
+    "approval": "RC venv previously approved for fixture; Gradle retry used automatic sandbox approval",
+    "changed_existing_android_files": [
+      "app/build.gradle.kts"
+    ],
+    "managed_file_hashes": {
+      "app/android-stack/network/Usage.md": "3d39a865e92bdf8f4353fa00a409191ac422359e0587625326b88424a66e738a",
+      "app/build.gradle.kts": "491f543f33e27858889fef00acf4ab1613e374a186fa100eb240161ae9116d9c",
+      "app/src/main/java/dev/compat/network/network/Network.kt": "d7a0853c721129d7a0352bd85bbc61e7f14abdeb0cca28e0a96a9285a652a56c",
+      "app/src/test/java/dev/compat/network/network/NetworkTest.kt": "fe1ea0e84e49ecf99fd18d53f24d4fd13504a4abf479a6e4ef5c53f7df858762"
+    },
+    "junit": {
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  }
+}

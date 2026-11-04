@@ -1,0 +1,12 @@
+{
+  "protocol": 1,
+  "capabilities": [
+    "workflow.plan-install-verify.v1",
+    "plan.diagnostics.v1",
+    "install.source-layout.v1",
+    "distribution.release-identity.v1"
+  ],
+  "recipes": {
+    "timber-standard": "0.1.1"
+  }
+}

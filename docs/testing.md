@@ -56,3 +56,28 @@ Check that hidden .gitignore templates, all five Recipe manifests, JSON Schema, 
 ## Manual runtime verification still required
 
 Open each generated example in Android Studio, deploy to an API 26+ emulator/device, confirm the local home screen, run an AppImage with real placeholder/error assets, and wire a controlled HTTPS backend before live API checks. These GUI/device tasks are explicitly excluded from Codex RC acceptance and do not block its automated result. No device/emulator UI or live remote-service verification is claimed by the build tests. Windows wrapper and Linux execution are not certified by the macOS build run.
+
+## Existing-project source layout acceptance
+
+The V0.3.0 source layout run passed 81 Python tests. The suite covers root selection, ambiguous and unsupported layouts, target collisions, module containment, stale plans, unchanged legacy records and journal recovery.
+
+The Gradle matrix used isolated copies of the Android Studio MyApplication sample. The fresh-install baseline was prepared by checking the previous installation hashes in the copy and removing the Recipe-owned outputs and its dependency block from that copy. The existing INTERNET declaration, application sources, tests and toolchain files were retained. The original sample was checked with read-only status and plan.
+
+| Fixture | Planned Retrofit roots | Gradle result |
+|---|---|---|
+| Native Java layout | `app/src/main/java`, `app/src/test/java` | Debug APK and 15 unit tests passed |
+| Kotlin layout | `app/src/main/kotlin`, `app/src/test/kotlin` | Debug APK and 15 unit tests passed |
+| Mixed layout | `app/src/main/java`, `app/src/test/kotlin` | Debug APK and 15 unit tests passed |
+| Literal custom sourceSets | `app/code/main`, `app/code/unit` | Debug APK and 15 unit tests passed |
+| Legacy installation | Recorded Kotlin paths | Debug APK and 15 unit tests passed |
+
+These builds used Kotlin 2.0.21, AGP 8.13.1, Gradle 8.14.3 and JVM target 11. The CLI sequence was inspect, plan, install, status and verify, with a repeated install checked against file snapshots. The native Java fixture kept both Kotlin source root directories absent. The original sample's recorded hashes matched and its plan contained no writes.
+
+The existing Android regression matrix passed five builds with 18 tests each and one dependency-conflict case with unchanged files. New Lightweight Compose + Coil and Standard XML + Glide projects passed 18 and 20 tests respectively and retained their default Kotlin roots. All listed Android builds executed `:app:assembleDebug :app:testDebugUnitTest`.
+
+
+## Phase 2 候选版
+
+使用固定提交构建的 wheel 和独立 Skill zip，在临时 HOME、PATH 和 venv 中验收。候选构建、平台依赖锁和公开发布边界见 [Release Candidate 指南](release-candidate.md)。Python 回归通过 `python -m pytest -q` 执行。Android 验收使用临时夹具与命令行 Gradle。
+
+Phase 2 的 [隔离矩阵](validation/readiness-phase2/isolated-matrix.json)、[Gradle 回归](validation/readiness-phase2/gradle-matrix.json)和 [真实 Codex 命令](validation/readiness-phase2/codex.json)记录了实际运行结果。公开下载和非 Apple Silicon 原生运行仍待验收。

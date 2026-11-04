@@ -24,9 +24,9 @@ features: [okhttp, gson, result-wrapper, error-mapping, optional-hilt]
 variables:
   package: detected namespace
 files:
-  - {template: templates/Network.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/network/Network.kt'}
-  - {template: templates/NetworkModule.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/network/NetworkModule.kt', when: hilt}
-  - {template: templates/NetworkTest.kt.j2, path: '{{ module }}/src/test/kotlin/{{ package_path }}/network/NetworkTest.kt'}
+  - {template: templates/Network.kt.j2, path: '{{ main_source }}/{{ package_path }}/network/Network.kt'}
+  - {template: templates/NetworkModule.kt.j2, path: '{{ main_source }}/{{ package_path }}/network/NetworkModule.kt', when: hilt}
+  - {template: templates/NetworkTest.kt.j2, path: '{{ test_source }}/{{ package_path }}/network/NetworkTest.kt'}
   - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/network/Usage.md'}
 integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
 validation: [schema, owned-file-hashes, gradle-build, unit-test]

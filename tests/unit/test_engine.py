@@ -8,6 +8,7 @@ from android_stack_skills.resolver import render
 
 
 def test_inspect(project):
+    (project/'build.gradle.kts').unlink()
     info = inspect(project)
     assert info['android']
     assert info['selected']['package'] == 'com.example.demo'

@@ -1,0 +1,14 @@
+{
+  "protocol": 1,
+  "capabilities": [
+    "workflow.plan-install-verify.v1",
+    "plan.diagnostics.v1",
+    "install.source-layout.v1",
+    "create.ui-image.v1",
+    "distribution.release-identity.v1"
+  ],
+  "recipes": {
+    "lightweight": "0.1.0",
+    "standard": "0.1.0"
+  }
+}

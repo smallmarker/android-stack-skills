@@ -1,0 +1,66 @@
+{
+  "01_first_install": {
+    "result": "PASS",
+    "detail": "Hash-verified HTTP fixture bundle installed into clean site-packages."
+  },
+  "02_cli_missing": {
+    "result": "PASS",
+    "detail": "Sanitized PATH resolves no CLI."
+  },
+  "03_old_cli_new_skill": {
+    "result": "PASS",
+    "detail": "Verified Phase 1 wheel probes successfully but lacks release identity."
+  },
+  "04_new_cli_old_skill": {
+    "result": "PASS",
+    "detail": "Phase 1 Skill extracted from reviewed wheel accepts RC1."
+  },
+  "05_protocol_mismatch": {
+    "result": "PASS",
+    "detail": "Gate rejected a fixture reporting protocol 2."
+  },
+  "06_artifact_hash_error": {
+    "result": "PASS",
+    "detail": "Tampered wheel is rejected before venv creation."
+  },
+  "07_dependency_hash_error": {
+    "result": "PASS",
+    "detail": "Real pip rejects the changed dependency bytes."
+  },
+  "08_interrupted_download": {
+    "result": "PASS",
+    "detail": "Local HTTP returned a truncated body; no setup ran."
+  },
+  "09_user_declines": {
+    "result": "PASS",
+    "detail": "Declined approval branch skips preparation, with no venv or writes."
+  },
+  "10_user_approves": {
+    "result": "PASS",
+    "detail": "Authorized test branch created the venv and probed it."
+  },
+  "11_repeat_prepare": {
+    "result": "PASS",
+    "detail": "Repeated preparation reused venv with byte-identical files."
+  },
+  "12_wrong_python": {
+    "result": "PASS",
+    "detail": "Actual Python 3.9 rejects preparation."
+  },
+  "13_unsupported_platform": {
+    "result": "PASS",
+    "detail": "Platform detection simulated with an unsupported architecture."
+  },
+  "14_read_only_retrofit_plan": {
+    "result": "PASS",
+    "detail": "Installed CLI planned Network.kt under the existing Java root; zero writes."
+  },
+  "15_authorized_install_real_gradle": {
+    "result": "PASS",
+    "detail": "Independent Codex B used RC wheel. Debug APK and 14 unit tests passed."
+  },
+  "16_failure_zero_android_writes": {
+    "result": "PASS",
+    "detail": "Fixture file digests match after all failed preparations."
+  }
+}

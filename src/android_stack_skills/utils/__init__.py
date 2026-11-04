@@ -19,3 +19,15 @@ def safe_path(root: Path, relative: str) -> Path:
         if parent.is_symlink():
             raise StackError(f"Symlink is not writable: {parent}")
     return candidate
+
+
+def read_text(path: Path) -> str:
+    with path.open(encoding='utf-8', newline='') as source:
+        return source.read()
+
+
+def module_path(project: Path, module: str, relative: str) -> Path:
+    path = Path(relative)
+    if not path.is_relative_to(module) or path == Path(module):
+        raise StackError(f'Output path must be inside module {module}: {relative}')
+    return safe_path(safe_path(project, module), str(path.relative_to(module)))

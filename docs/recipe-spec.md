@@ -35,3 +35,37 @@ Plan JSON contains recipe/version, file before/after/Diff entries, dependency ad
 Inspect the selected module's `image_libraries` before planning. Direct coordinates and supported catalog aliases identify Coil 2, Coil 3 and Glide. An existing alternate image library or an owned alternate Recipe blocks installation. Matching versions are reused. Conflicting versions and owned or user-created files require manual review.
 
 Project presets select a UI template tree and one image Recipe. Shared templates supply the ViewModel, Repository, DI and application bootstrap. The `reuses` metadata enumerates eligible dependencies for the preset. Each create invocation installs Retrofit, Timber and the selected image Recipe.
+
+## Existing-project diagnostics
+
+Plans retain the string `conflicts` list for compatibility. The `diagnostics` array contains `category`, `reason`, `action` and `blocking`. A blocked JSON install exits 2 and returns `error` and `diagnostics` on stderr.
+
+| Category | Typical action |
+|---|---|
+| `environment_missing` | Locate the project root or restore its existing wrapper |
+| `project_configuration` | Resolve the selected module or review the Manifest patch |
+| `unverified_versions` | Test the exact existing toolchain in isolation |
+| `incompatible_versions` | Identify the proven constraint and agree on a remedy before editing versions |
+| `dependency_conflict` | Preserve the installed dependency and validate a compatible integration |
+| `source_conflict` | Preserve source and review the proposed location or integration manually |
+
+A missing INTERNET declaration includes `path`, `diff` and `authorization_required`. The default plan keeps the edit outside `files`. Both forms of `plan` are read-only.
+
+```sh
+android-stack plan --project /path/to/project --recipe retrofit-standard --json
+android-stack plan --project /path/to/project --recipe retrofit-standard --add-internet-permission --json
+```
+
+After the user explicitly approves the displayed permission change, use `install --add-internet-permission` with the same project, module and Recipe. The installer applies the reviewed insertion in the same transaction as the Recipe files. All other blockers still prevent writes. The flag covers one unrestricted source Manifest declaration. Restricted permissions, merge overrides, malformed XML and repairs to an already installed Recipe require review and an approved manual edit. Verify the merged Manifest for the intended variant.
+
+## Source roots for existing modules
+
+The Inspector reports `selected.source_layout` with separate main and test candidates. Each candidate reports its module-relative path, whether Gradle declares it explicitly, whether the namespace directory exists and the observed Kotlin file count. An unresolved sourceSets configuration is reported as an issue.
+
+The Resolver selects a root for each required source set. It considers literal declared roots first. With conventional roots it prefers an existing namespace directory, then the highest Kotlin file count. A tie blocks installation and names the candidates. When no main root exists, it uses `src/main/kotlin`. When no test root exists, it uses `src/test/java` for a conventional Java main root and `src/test/kotlin` otherwise.
+
+Retrofit, Coil, Glide and Timber use `main_source` and, for Recipes with unit tests, `test_source` in their file paths. The resolved module-relative choices appear as project-relative paths in plan adaptation and file entries. The Installer checks that each target is inside the selected module. A module build script change invalidates the plan even when its existing dependencies were reusable.
+
+Supported custom Kotlin DSL syntax uses `sourceSets.getByName("main") { java.setSrcDirs(listOf("code/main")) }` directly in `android`, or a `sourceSets { getByName(...) { ... } }` block. The same forms support `test`. Dynamic, chained, variant-specific and externally applied declarations require review. Absolute paths, parent traversals and symlinked roots are rejected. [Android source-set documentation](https://developer.android.com/build/build-variants#change-default-source-set-configurations)
+
+Generated projects retain the preset's Kotlin source directories. For an existing installation, status, verify and repeat install use the recorded paths and hashes. Layout inference only applies to a fresh installation of a Recipe. Recover continues to use the journal's exact paths. A migration of owned files would need its own preview, authorization and atomic update to the ownership record.

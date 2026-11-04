@@ -27,10 +27,13 @@ npx skills add smallmarker/android-stack-skills
 Requires Python 3.11+ and pipx. After installation, run the checks below from the environment the agent uses to execute commands. If the CLI is missing, run `pipx ensurepath` and restart the host.
 
 ```sh
-pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
+pipx install git+https://github.com/smallmarker/android-stack-skills.git@main
 android-stack version
 android-stack recipes list
+android-stack capabilities --json
 ```
+
+This installs the current development CLI. The Skills check CLI and Recipe compatibility before changing a project. If a compatible CLI is missing, they guide you through preparation and request approval before installing it. See the [capability protocol](docs/agent-compatibility.md#能力协议).
 
 ### 3. Start using the Skills
 
@@ -73,7 +76,7 @@ android-stack install --project ./MyApp --recipe retrofit-standard --verify
 
 Use the same workflow with `coil-standard`, `glide-standard`, and `timber-standard`. In multi-module projects, select the target module with `--module :app`. Check `image_libraries` in the inspection output to choose a Recipe for the existing library, then follow the generated `app/android-stack/*/Usage.md` for initialization.
 
-Planning is read-only. The CLI reuses matching dependency versions and stops on dependency or source conflicts. Repeated installs verify existing content and leave files intact. Existing projects require Kotlin DSL and a literal namespace and minSdk. The Network and Image Recipes require INTERNET permission.
+Planning is read-only. The CLI reuses matching dependency versions and stops on dependency or source conflicts. Repeated installs verify existing content and leave files intact. Existing projects require Kotlin DSL and a literal namespace and minSdk. The Network and Image Recipes require INTERNET permission. If it is missing, review the proposed manifest edit with `plan --add-internet-permission` and pass `--add-internet-permission` to `install` only after explicit approval.
 
 ## Supported Coding Agents
 

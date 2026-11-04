@@ -45,19 +45,19 @@ def test_concurrent_edit(project):
     build.write_text(build.read_text()+'// user edit')
     with pytest.raises(StackError, match='changed since plan'):
         apply(change)
-    assert not (project/'app/src/main/kotlin/com/example/demo/network/Network.kt').exists()
+    assert not (project/'app/src/main/java/com/example/demo/network/Network.kt').exists()
 
 
 def test_file_conflict(project):
-    file = project/'app/src/main/kotlin/com/example/demo/network/Network.kt'
-    file.parent.mkdir(parents=True)
+    file = project/'app/src/main/java/com/example/demo/network/Network.kt'
+    file.parent.mkdir(parents=True, exist_ok=True)
     file.write_text('// user source')
     assert any('already exists' in c for c in plan(project, 'retrofit-standard')['conflicts'])
 
 
 def test_owned_file_edit(project):
     apply(plan(project, 'retrofit-standard'))
-    source = project/'app/src/main/kotlin/com/example/demo/network/Network.kt'
+    source = project/'app/src/main/java/com/example/demo/network/Network.kt'
     source.write_text('// modified')
     assert any('changed or missing' in c for c in plan(project, 'retrofit-standard')['conflicts'])
 
@@ -75,7 +75,7 @@ def test_rollback(project, monkeypatch):
     with pytest.raises(OSError, match='disk error'):
         apply(change)
     assert (project/'app/build.gradle.kts').read_text() == original_build
-    assert not (project/'app/src/main/kotlin/com/example/demo/network/Network.kt').exists()
+    assert not (project/'app/src/main/java/com/example/demo/network/Network.kt').exists()
 
 
 def test_installed_dependency_removed(project):
@@ -87,7 +87,7 @@ def test_installed_dependency_removed(project):
 
 def test_version_catalog_existing_dependency(project):
     folder = project/'gradle'
-    folder.mkdir()
+    folder.mkdir(exist_ok=True)
     (folder/'libs.versions.toml').write_text('[versions]\nretrofit="2.9.0"\n[libraries]\nretrofit = { module="com.squareup.retrofit2:retrofit", version.ref="retrofit" }\n')
     build = project/'app/build.gradle.kts'
     build.write_text(build.read_text()+'\ndependencies { implementation(libs.retrofit) }')
@@ -153,7 +153,7 @@ def test_other_image_library_is_preserved(project, coordinate, recipe, existing)
 @pytest.mark.parametrize(('version', 'conflict'), [('4.16.0', False), ('4.15.1', True)])
 def test_glide_catalog_version(project, version, conflict):
     gradle = project/'gradle'
-    gradle.mkdir()
+    gradle.mkdir(exist_ok=True)
     (gradle/'libs.versions.toml').write_text(f'[libraries]\nglide = "com.github.bumptech.glide:glide:{version}"\n')
     build = project/'app/build.gradle.kts'
     build.write_text(build.read_text()+'\ndependencies { implementation(libs.glide) }')
@@ -163,7 +163,7 @@ def test_glide_catalog_version(project, version, conflict):
 
 
 def test_glide_does_not_overwrite_user_wrapper(project):
-    source = project/'app/src/main/kotlin/com/example/demo/image/GlideImages.kt'
+    source = project/'app/src/main/java/com/example/demo/image/GlideImages.kt'
     source.parent.mkdir(parents=True)
     original = 'package com.example.demo.image\n// Existing image helpers\n'
     source.write_text(original)

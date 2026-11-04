@@ -15,7 +15,7 @@ dependencies:
 features: [compose, shared-loader, cache, placeholder, error-state, shape, content-scale]
 variables: {package: detected namespace}
 files:
-  - {template: templates/AppImage.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/image/AppImage.kt'}
+  - {template: templates/AppImage.kt.j2, path: '{{ main_source }}/{{ package_path }}/image/AppImage.kt'}
   - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/image/Usage.md'}
 integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
 validation: [schema, owned-file-hashes, gradle-build, unit-test]

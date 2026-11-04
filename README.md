@@ -27,10 +27,13 @@ npx skills add smallmarker/android-stack-skills
 需要 Python 3.11+ 和 pipx。安装后，在 Agent 能执行命令的环境中运行下列检查。若找不到 CLI，运行 `pipx ensurepath` 后重新启动宿主。
 
 ```sh
-pipx install git+https://github.com/smallmarker/android-stack-skills.git@v0.2.0
+pipx install git+https://github.com/smallmarker/android-stack-skills.git@main
 android-stack version
 android-stack recipes list
+android-stack capabilities --json
 ```
+
+此命令安装当前开发版 CLI。Skills 会在修改工程前检查 CLI 与 Recipe 的兼容性。缺少兼容 CLI 时，Skills 会引导准备，并在安装前征求批准。详见 [能力协议](docs/agent-compatibility.md#能力协议)。
 
 ### 3. 开始使用
 
@@ -73,7 +76,7 @@ android-stack install --project ./MyApp --recipe retrofit-standard --verify
 
 同样的流程适用于 `coil-standard`、`glide-standard` 和 `timber-standard`。多模块工程可用 `--module :app` 选择目标模块。通过 `inspect` 的 `image_libraries` 选择现有图片库对应的 Recipe，并按生成的 `app/android-stack/*/Usage.md` 完成初始化。
 
-安装计划可只读预览。CLI 复用版本匹配的依赖，遇到版本或源码冲突时停止。重复安装会核验已安装内容并保持文件原样。已有工程需要 Kotlin DSL、显式 namespace 和 minSdk。Network 和 Image Recipe 需要 INTERNET 权限。
+安装计划可只读预览。CLI 复用版本匹配的依赖，遇到版本或源码冲突时停止。重复安装会核验已安装内容并保持文件原样。已有工程需要 Kotlin DSL、显式 namespace 和 minSdk。Network 和 Image Recipe 需要 INTERNET 权限。缺少权限时，可用 `plan --add-internet-permission` 审查 Manifest 变更，明确授权后再为 `install` 传入 `--add-internet-permission`。
 
 ## 支持的 Coding Agents
 

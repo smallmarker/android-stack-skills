@@ -13,8 +13,12 @@ def emit(value: dict | list, as_json: bool = False) -> None:
     elif isinstance(value, dict) and 'files' in value:
         print(f"Recipe: {value['recipe']} {value['version']}")
         print('Already installed:', value['already_installed'])
-        for conflict in value['conflicts']:
-            print('CONFLICT:', conflict)
+        for diagnostic in value['diagnostics']:
+            level = 'BLOCKED' if diagnostic['blocking'] else 'REVIEW'
+            print(f"{level} [{diagnostic['category']}] {diagnostic['reason']}")
+            print(f"Next step: {diagnostic['action']}")
+            if diagnostic.get('diff') and diagnostic['blocking']:
+                print(diagnostic['diff'])
         print('Adaptation:', json.dumps(value['adaptation'], ensure_ascii=False))
         for dependency in value['dependencies']:
             print(f"ADD {dependency['configuration']}: {dependency['module']}:{dependency['version']}")
@@ -31,6 +35,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(prog='android-stack')
     commands = parser.add_subparsers(dest='command', required=True)
     commands.add_parser('version')
+    capability = commands.add_parser('capabilities', help='Report the Skill compatibility protocol')
+    capability.add_argument('--json', action='store_true', help='Output JSON (also the default)')
     listing = commands.add_parser('recipes').add_subparsers(dest='action', required=True).add_parser('list')
     listing.add_argument('--json', action='store_true')
     for name in ('inspect', 'plan', 'install', 'verify', 'status', 'recover'):
@@ -40,6 +46,8 @@ def main() -> int:
         command.add_argument('--json', action='store_true')
         if name in ('plan', 'install'):
             command.add_argument('--recipe', required=True)
+            command.add_argument('--add-internet-permission', action='store_true',
+                                 help='Include the reviewed INTERNET edit. Use only with explicit user approval for install.')
         if name == 'install':
             command.add_argument('--dry-run', action='store_true')
             command.add_argument('--verify', action='store_true', help='Run real Gradle build/tests after installation')
@@ -62,13 +70,26 @@ def main() -> int:
         if args.command == 'version':
             print(__version__)
             return 0
+        if args.command == 'capabilities':
+            from .capabilities import report
+            emit(report(), True)
+            return 0
         if args.command == 'recipes':
             result = [{'id': r['id'], 'version': r['version'], 'category': r['category']} for r in recipes().values()]
         elif args.command == 'inspect':
             result = inspect(args.project, args.module)
         elif args.command in ('plan', 'install'):
-            result = plan(args.project, args.recipe, args.module)
+            result = plan(args.project, args.recipe, args.module,
+                          add_internet_permission=args.add_internet_permission)
             if args.command == 'install' and not args.dry_run:
+                if result['conflicts']:
+                    if args.json:
+                        error = 'Installation blocked: ' + '; '.join(result['conflicts'])
+                        print(json.dumps({'error': error, 'diagnostics': result['diagnostics']},
+                                         ensure_ascii=False), file=sys.stderr)
+                    else:
+                        emit(result)
+                    return 2
                 result = apply(result)
                 if args.verify:
                     result['verification'] = verify(args.project, args.module)

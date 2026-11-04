@@ -4,13 +4,17 @@ description: Integrate Timber with a unified debug-only AppLogger and structured
 license: MIT
 ---
 
+## CLI readiness
+
+Before any Android operation, read [cli-requirements.json](cli-requirements.json) and [cli-setup.md](cli-setup.md). Check the trusted executable with `android-stack capabilities --json` and compare the protocol, capabilities and Recipe versions. Stop and ask for approval before preparing a missing or incompatible CLI. Use the same checked executable for the workflow.
+
 Environment: Requires android-stack CLI, Python 3.11+, JDK 17, and Android SDK for actual builds.
 
 Use `timber-standard` from Android Stack Skills. Fixed Kotlin implementations are bundled with the installed Python CLI; the skill folder does not need to carry another copy.
 
 ## Workflow
 
-1. Locate the target project from the user/workspace. Run `android-stack version` and `android-stack recipes list`. If the CLI is unavailable, ask the user to install Android Stack CLI using the official repository README and ensure `android-stack` is on the agent process PATH before continuing.
+1. Locate the target project from the user/workspace. Use the CLI that passed the readiness check.
 2. Run `android-stack inspect --project <path> --json`. For multiple Android modules select `--module :app` (or the actual module) in inspect/plan/install/verify. V1 safely installs only supported Kotlin DSL structures. Treat unknown values as unknown.
 3. Run `android-stack status --project <path>` for existing Recipe state. For status-only requests, report the result without installing anything.
 4. Run `android-stack plan --project <path> --recipe timber-standard`. Review dependency versions, file Diff, namespace, DI and conflicts. Planning does not write files. Do not silently upgrade existing versions or replace user source. Stop deterministic installation if the plan has conflicts; explain the concrete conflict. If the requested integration authorizes a narrow manual adaptation, preserve existing architecture and review its Diff.

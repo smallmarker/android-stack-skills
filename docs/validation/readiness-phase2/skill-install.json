@@ -1,0 +1,54 @@
+{
+  "project": [
+    {
+      "name": "android-image",
+      "status": "installed",
+      "scope": "project",
+      "mode": "copy"
+    },
+    {
+      "name": "android-logging",
+      "status": "installed",
+      "scope": "project",
+      "mode": "copy"
+    },
+    {
+      "name": "android-network",
+      "status": "installed",
+      "scope": "project",
+      "mode": "copy"
+    },
+    {
+      "name": "android-project",
+      "status": "installed",
+      "scope": "project",
+      "mode": "copy"
+    }
+  ],
+  "user": [
+    {
+      "name": "android-image",
+      "status": "installed",
+      "scope": "global",
+      "mode": "copy"
+    },
+    {
+      "name": "android-logging",
+      "status": "installed",
+      "scope": "global",
+      "mode": "copy"
+    },
+    {
+      "name": "android-network",
+      "status": "installed",
+      "scope": "global",
+      "mode": "copy"
+    },
+    {
+      "name": "android-project",
+      "status": "installed",
+      "scope": "global",
+      "mode": "copy"
+    }
+  ]
+}

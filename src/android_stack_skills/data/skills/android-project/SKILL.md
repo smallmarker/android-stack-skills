@@ -4,6 +4,10 @@ description: Create a Kotlin Android Compose or XML ViewBinding MVVM project wit
 license: MIT
 ---
 
+## CLI readiness
+
+Before any Android operation, read [cli-requirements.json](cli-requirements.json) and [cli-setup.md](cli-setup.md). Check the trusted executable with `android-stack capabilities --json` and compare the protocol, capabilities and Recipe versions. Stop and ask for approval before preparing a missing or incompatible CLI. Use the same checked executable for the workflow.
+
 Environment: Requires android-stack CLI, Python 3.11+, JDK 17, Android SDK 36, and Maven/Gradle access.
 
 ## Choose the preset
@@ -13,7 +17,7 @@ Use lightweight for a small single-module app with explicit constructors. Use st
 ## Create and verify
 
 1. Establish project name, dotted package name, and output directory from the request. Infer routine choices. Never overwrite an existing directory or change unrelated repositories.
-2. Check `android-stack version`, `android-stack recipes list`, Java 17 and Android SDK. If the CLI is unavailable, ask the user to install Android Stack CLI using the official repository README and ensure `android-stack` is on the agent process PATH before continuing.
+2. Check Java 17 and Android SDK using the CLI environment that passed readiness.
 3. Run `android-stack create --name DemoApp --package com.example.demo --preset standard --output ./DemoApp` with the requested values. The default runs actual Gradle builds and unit tests. The bundled wrapper and distribution are SHA-256 pinned.
 4. `--skip-verify` is only for deliberate offline generation; clearly report unverified output. Do not call generated code tested in that mode.
 5. Run `android-stack inspect --project ./DemoApp` and `android-stack status --project ./DemoApp`. Check all three recipes are recorded. Follow generated README and app/android-stack/*/Usage.md for APIs. No real backend or credentials are invented.

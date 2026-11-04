@@ -15,8 +15,8 @@ dependencies:
 features: [image-view, lifecycle, placeholder, error-state, clear]
 variables: {package: detected namespace}
 files:
-  - {template: templates/GlideImages.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/image/GlideImages.kt'}
-  - {template: templates/GlideImagesTest.kt.j2, path: '{{ module }}/src/test/kotlin/{{ package_path }}/image/GlideImagesTest.kt'}
+  - {template: templates/GlideImages.kt.j2, path: '{{ main_source }}/{{ package_path }}/image/GlideImages.kt'}
+  - {template: templates/GlideImagesTest.kt.j2, path: '{{ test_source }}/{{ package_path }}/image/GlideImagesTest.kt'}
   - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/image/Usage.md'}
 integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
 validation: [schema, owned-file-hashes, gradle-build, unit-test]

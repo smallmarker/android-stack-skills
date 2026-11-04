@@ -1,0 +1,183 @@
+[
+  {
+    "kotlin": "2.0.21",
+    "jvm_target": 11,
+    "agp": "8.13.1",
+    "gradle": "8.14.3",
+    "toolchain_files_preserved": true,
+    "idempotent": true,
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/network-matrix/kotlin-2.0.21/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 5s"
+    ]
+  },
+  {
+    "kotlin": "2.2.20",
+    "jvm_target": 17,
+    "agp": "8.13.1",
+    "gradle": "8.14.3",
+    "toolchain_files_preserved": true,
+    "idempotent": true,
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/network-matrix/kotlin-2.2.20/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 13s"
+    ]
+  },
+  {
+    "name": "java",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/java/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 13s"
+    ]
+  },
+  {
+    "name": "kotlin",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/kotlin/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 9s"
+    ]
+  },
+  {
+    "name": "mixed",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/mixed/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 4s"
+    ]
+  },
+  {
+    "name": "lightweight-compose",
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/lightweight-compose/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 31s"
+    ]
+  },
+  {
+    "name": "lightweight-xml",
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/lightweight-xml/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 12s"
+    ]
+  },
+  {
+    "name": "standard-compose",
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/standard-compose/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 19s"
+    ]
+  },
+  {
+    "name": "standard-xml",
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "exit_code": 0,
+    "command": [
+      "<phase2-test-root>/gradle-matrix/standard-xml/gradlew",
+      ":app:assembleDebug",
+      ":app:testDebugUnitTest",
+      "--console=plain",
+      "--stacktrace"
+    ],
+    "build_summary": [
+      "BUILD SUCCESSFUL in 18s"
+    ]
+  }
+]

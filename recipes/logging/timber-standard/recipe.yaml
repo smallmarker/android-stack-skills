@@ -15,9 +15,9 @@ dependencies:
 features: [debug-only, levels, tags, structured-safe-fields, optional-hilt]
 variables: {package: detected namespace}
 files:
-  - {template: templates/AppLogger.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/logging/AppLogger.kt'}
-  - {template: templates/LoggerModule.kt.j2, path: '{{ module }}/src/main/kotlin/{{ package_path }}/logging/LoggerModule.kt', when: hilt}
-  - {template: templates/LoggerTest.kt.j2, path: '{{ module }}/src/test/kotlin/{{ package_path }}/logging/LoggerTest.kt'}
+  - {template: templates/AppLogger.kt.j2, path: '{{ main_source }}/{{ package_path }}/logging/AppLogger.kt'}
+  - {template: templates/LoggerModule.kt.j2, path: '{{ main_source }}/{{ package_path }}/logging/LoggerModule.kt', when: hilt}
+  - {template: templates/LoggerTest.kt.j2, path: '{{ test_source }}/{{ package_path }}/logging/LoggerTest.kt'}
   - {template: templates/Usage.md.j2, path: '{{ module }}/android-stack/logging/Usage.md'}
 integration: {supports_existing_project: true, idempotent: true, strategy: append-dependency-block}
 validation: [schema, owned-file-hashes, gradle-build, unit-test]

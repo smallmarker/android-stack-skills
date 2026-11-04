@@ -26,7 +26,7 @@ Test machine: macOS arm64, Python 3.11.14, JDK Microsoft OpenJDK 17.0.15, Androi
 
 Google Maven connections required the machine's proxy for JVM builds. Proxy flags were set only in test processes. No proxy, SDK path or credentials are generated into projects. `scripts/check_versions.py` re-reads upstream metadata without mutating pins; Python HTTPS occasionally reset on Google Maven, so those entries were confirmed using curl.
 
-Unsupported automatic writes: Groovy DSL, AGP 9 built-in Kotlin, dependency bundles/dynamic expressions, custom module mappings/includeBuild, complex convention plugins, KMP, automatic dependency upgrades and existing ImageLoader merging. Kotlin <2.2.20 and AGP <8.13 are conservatively rejected; unknown versions are explicit risks requiring build validation. Higher versions have not been generally certified.
+Unsupported automatic writes: Groovy DSL, AGP 9 built-in Kotlin, dependency bundles/dynamic expressions, custom module mappings/includeBuild, complex convention plugins, KMP, automatic dependency upgrades and existing ImageLoader merging. The general Recipe baseline still gates Kotlin below 2.2.20 and AGP below 8.13. Retrofit uses the exact toolchain profiles below.
 
 At RC 2026-11-03, Network and Logging Recipes are 0.1.1; Coil and the two presets remain 0.1.0. Dependency pins are unchanged. Every Recipe records its upstream version/license. Kotlin wrappers are original project source; no upstream library implementation is copied. Libraries resolve from Maven and retain upstream licensing. The redistributed Gradle Wrapper's upstream license is in `src/android_stack_skills/data/licenses/Gradle-LICENSE.txt` and copied to generated projects. See [third-party notices](third-party.md).
 
@@ -55,3 +55,28 @@ Glide 版本以本次验证使用的 4.16.0 为准。XML 与 Compose 的 `debugR
 | XML + Coil | 创建前拒绝 | 创建前拒绝 |
 
 Python 回归 53 项通过。V1 Android 回归矩阵完成 5 次构建和 1 项依赖冲突保护。Glide 的 JVM 用例验证占位图、失败图和空模型回退参数。CLI 重复安装返回 `already-installed`，文件哈希一致。对已使用 Glide 的 Compose 工程安装 Coil 返回退出码 2，工程文件哈希一致。
+
+## V0.3.0 Retrofit on existing Kotlin projects
+
+The Retrofit 0.1.1 sources and dependency pins were held constant. Commit `6761112` introduced Kotlin 2.2.20 as a shared Resolver baseline. The Recipe uses suspend calls, coroutines, OkHttp and Gson, and its source does not require a language feature introduced in Kotlin 2.2. Coroutines 1.10 adopted Kotlin 2.1.0, so compiler and dependency metadata compatibility required an actual build. [Coroutines 1.10 release notes](https://github.com/Kotlin/kotlinx.coroutines/releases/tag/1.10.0)
+
+On 2026-11-03, independent Android projects passed `:app:assembleDebug :app:testDebugUnitTest` with the original Recipe. The POC also passed with Kotlin 2.0.21 targeting JVM 17. The CLI acceptance run covered the existing-project JVM 11 target and the JVM 17 baseline as follows.
+
+| Kotlin | AGP | Gradle | Tested scope | Result |
+|---|---|---|---|---|
+| 2.0.21 | 8.13.1 | 8.14.3 | Plain Kotlin Android, JDK 17, JVM target 11, SDK 36, minSdk 24 | Debug APK, 14 tests passed |
+| 2.2.20 | 8.13.1 | 8.14.3 | JDK 17, JVM target 17, SDK 36, minSdk 24 | Debug APK, 14 tests passed |
+
+The Kotlin 2.0.21 profile is limited to Retrofit in a module without Compose or Hilt. The versions above are empirical results for this Recipe. The Kotlin documentation lists a narrower fully supported KGP 2.0.21 toolchain range. Release shrinking, device behavior, additional plugin combinations and other Kotlin, AGP or Gradle versions need separate evidence. [Kotlin Gradle plugin compatibility](https://kotlinlang.org/docs/gradle-configure-project.html)
+
+Unverified Retrofit profiles block writes and recommend an isolated reproduction with the current versions. A documented requirement, such as AGP 8.13 requiring Gradle 8.13 or newer, yields a separate incompatible-version diagnostic. No toolchain edit is generated. [AGP 8.13 requirements](https://developer.android.com/build/releases/agp-8-13-0-release-notes)
+
+Reproduce the CLI acceptance with JDK 17 and ANDROID_HOME configured.
+
+```sh
+.venv/bin/python scripts/verify_network_compatibility.py --output /tmp/network-compatibility-check
+```
+
+The script creates new fixtures, verifies that install without permission approval makes zero writes, previews and applies the explicitly authorized Manifest insertion, builds and tests both projects, checks toolchain file hashes, and confirms repeat install is a no-op. Existing test projects keep their original versions. The Python suite passed 63 tests. The existing V1 Android regression matrix passed five Gradle builds with 18 tests each and one conflict case with unchanged files.
+
+`MyApplication` was inspected and planned read-only. Its Kotlin 2.0.21, AGP 8.13.1 and Gradle 8.14.3 matched the verified profile. The plan reported one blocker for the missing INTERNET declaration and supplied the exact source Manifest diff. Its complete app build remains a separate verification after permission approval.

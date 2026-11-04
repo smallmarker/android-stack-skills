@@ -1,0 +1,22 @@
+{
+  "commit": "cba5dfe6b402381e0af04c12e6d7a6556fae1804",
+  "version": "0.3.0rc1",
+  "sha256": {
+    "android-stack-skills-0.3.0rc1-bundle.zip": "35072f66e979962954d2452bda8c6fd15ba90bea1ccbf11dfeed72af3d30dcb6",
+    "android_stack_skills-0.3.0rc1-py3-none-any.whl": "c203de4b18313ba9f60fa91f43828abcddd8e9aacf5d59838af5598f9e545cd5",
+    "release-manifest.json": "3588d624b348c51b4ced194a172d11fa7ac44351b069ae824d837b96909969d1",
+    "android-stack-skills-0.3.0rc1-skills.zip": "a2eb6e1b73d8bb8cd0180c6a413dedbbc96b939f76a5422b88b025b588a7204f",
+    "SHA256SUMS": "ebbb610faba6854299034995d10c8c05d31ec835a39a35569bce3d027b13f959"
+  },
+  "rebuild_byte_identical": true,
+  "platform_hash_checks": {
+    "linux-x86_64": 10,
+    "macos-x86_64": 10,
+    "windows-x86_64": 10,
+    "macos-arm64": 10
+  },
+  "python_tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 86
+  }
+}

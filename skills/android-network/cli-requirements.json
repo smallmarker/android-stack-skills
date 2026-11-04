@@ -1,0 +1,14 @@
+{
+  "protocol": 1,
+  "capabilities": [
+    "workflow.plan-install-verify.v1",
+    "plan.diagnostics.v1",
+    "install.source-layout.v1",
+    "install.internet-permission.v1",
+    "network.kotlin-2.0.21-profile.v1",
+    "distribution.release-identity.v1"
+  ],
+  "recipes": {
+    "retrofit-standard": "0.1.1"
+  }
+}

@@ -15,4 +15,6 @@ def test_all_skills_are_bundled():
     source = sorted((repo/'skills').glob('*/SKILL.md'))
     assert len(source) == 4
     for skill in source:
-        assert (DATA/'skills'/skill.relative_to(repo/'skills')).read_bytes() == skill.read_bytes()
+        for resource in skill.parent.rglob('*'):
+            if resource.is_file() and '__pycache__' not in resource.parts:
+                assert (DATA/'skills'/resource.relative_to(repo/'skills')).read_bytes() == resource.read_bytes()

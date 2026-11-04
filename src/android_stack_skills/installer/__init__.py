@@ -4,7 +4,7 @@ from contextlib import contextmanager
 import json
 import os
 from ..errors import StackError
-from ..utils import digest, safe_path
+from ..utils import digest, module_path, read_text, safe_path
 
 
 @contextmanager
@@ -30,15 +30,23 @@ def apply(plan: dict) -> dict:
     if plan['already_installed']:
         return {'status': 'already-installed', 'recipe': plan['recipe']}
     project = Path(plan['project'])
+    module = plan['adaptation']['module']
+    for file in plan['files']:
+        module_path(project, module, file['path'])
     with locked(project):
+        layout_input = plan.get('source_layout_build')
+        if layout_input:
+            build = module_path(project, module, layout_input['path'])
+            if not build.is_file() or digest(read_text(build)) != layout_input['sha256']:
+                raise StackError(f"File changed since plan: {layout_input['path']}")
         journal_path = safe_path(project, '.android-stack/journal.json')
         if journal_path.exists():
             raise StackError('Pending rollback journal; run recover first')
         manifest = safe_path(project, '.android-stack/manifest.json')
         old_manifest = manifest.read_text() if manifest.exists() else None
         for file in plan['files']:
-            path = safe_path(project, file['path'])
-            current = path.read_text() if path.exists() else None
+            path = module_path(project, module, file['path'])
+            current = read_text(path) if path.exists() else None
             if current != file['before']:
                 raise StackError(f"File changed since plan: {file['path']}")
         journal = {'files': [{'path': f['path'], 'before': f['before'], 'after_hash': digest(f['after'])} for f in plan['files']], 'manifest': old_manifest}
@@ -47,9 +55,9 @@ def apply(plan: dict) -> dict:
             json.dump(journal, journal_file, indent=2)
         try:
             for file in plan['files']:
-                path = safe_path(project, file['path'])
+                path = module_path(project, module, file['path'])
                 path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(file['after'])
+                path.write_text(file['after'], encoding='utf-8', newline='')
             record = json.loads(old_manifest) if old_manifest else {'schema': 1, 'recipes': {}}
             # Track generated source/test/usage files, not shared build scripts that other recipes extend.
             owned = {f['path']: digest(f['after']) for f in plan['files'] if f['before'] is None}
@@ -73,7 +81,7 @@ def _restore(project: Path, journal: dict) -> None:
         if file['before'] is None:
             path.unlink(missing_ok=True)
         else:
-            path.write_text(file['before'])
+            path.write_text(file['before'], encoding='utf-8', newline='')
     manifest = safe_path(project, '.android-stack/manifest.json')
     if journal['manifest'] is None:
         manifest.unlink(missing_ok=True)
@@ -105,7 +113,7 @@ def recover(project: Path) -> dict:
     journal = json.loads(journal_path.read_text())
     for file in journal['files']:
         path = safe_path(project, file['path'])
-        if path.exists() and digest(path.read_text()) not in (file['after_hash'], digest(file['before'] or '')):
+        if path.exists() and digest(read_text(path)) not in (file['after_hash'], digest(file['before'] or '')):
             raise StackError(f"Recovery would overwrite user changes: {file['path']}")
     _restore(project, journal)
     journal_path.unlink()
@@ -117,6 +125,6 @@ def status(project: Path) -> dict:
     path = safe_path(project, '.android-stack/manifest.json')
     record = json.loads(path.read_text()) if path.exists() else {'recipes': {}}
     for recipe in record['recipes'].values():
-        recipe['file_status'] = {name: 'ok' if safe_path(project, name).is_file() and digest(safe_path(project, name).read_text()) == expected else 'changed-or-missing' for name, expected in recipe['files'].items()}
-    record['managed_file_status'] = {name: 'ok' if safe_path(project, name).is_file() and digest(safe_path(project, name).read_text()) == expected else 'changed-or-missing' for name, expected in record.get('managed_files', {}).items()}
+        recipe['file_status'] = {name: 'ok' if safe_path(project, name).is_file() and digest(read_text(safe_path(project, name))) == expected else 'changed-or-missing' for name, expected in recipe['files'].items()}
+    record['managed_file_status'] = {name: 'ok' if safe_path(project, name).is_file() and digest(read_text(safe_path(project, name))) == expected else 'changed-or-missing' for name, expected in record.get('managed_files', {}).items()}
     return record
