@@ -1,0 +1,37 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+
+> Task :compileTestKotlin
+w: file://<network-test-root>/jvm/src/test/kotlin/NetworkSecurityTest.kt:245:55 The corresponding parameter in the supertype 'EventListener' is named 'inetSocketAddress'. This may cause problems when calling this function with named arguments.
+
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :test FAILED
+
+NetworkSecurityTest > writesAreNotReplayedForHttpFollowUps FAILED
+    java.lang.AssertionError at NetworkSecurityTest.kt:202
+
+NetworkSecurityTest > trustedHttpsReceivesOnlyConfiguredCredentials FAILED
+    java.lang.AssertionError at NetworkSecurityTest.kt:106
+
+2 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file://<network-test-root>/jvm/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 16s
+4 actionable tasks: 2 executed, 2 up-to-date

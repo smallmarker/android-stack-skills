@@ -16,3 +16,7 @@ Shared build scripts are tracked as managed files with their latest tool-written
 Project creation renders one shared Compose skeleton, adds Standard Hilt bindings when requested, then installs the same three Recipes. It writes a trusted upstream Wrapper JAR only after checking its pinned SHA-256, and pins the distribution hash. It never writes SDK locations or real credentials.
 
 Planning intentionally understands a bounded Gradle subset. It is not a Kotlin/Groovy interpreter. Complex Gradle adaptation belongs to an agent reviewing the actual project and must be followed by a real build.
+
+## Application architecture
+
+[Architecture Foundation v1](architecture-foundation-v1.md) defines application decisions, shared contracts and verification. [Network Architecture v1](network-architecture-v1.md) is the first reference pattern. The [architecture audit](architecture-audit-v1.md) records current evidence, gaps and rollout.

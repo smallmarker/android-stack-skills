@@ -80,3 +80,7 @@ Reproduce the CLI acceptance with JDK 17 and ANDROID_HOME configured.
 The script creates new fixtures, verifies that install without permission approval makes zero writes, previews and applies the explicitly authorized Manifest insertion, builds and tests both projects, checks toolchain file hashes, and confirms repeat install is a no-op. Existing test projects keep their original versions. The Python suite passed 63 tests. The existing V1 Android regression matrix passed five Gradle builds with 18 tests each and one conflict case with unchanged files.
 
 `MyApplication` was inspected and planned read-only. Its Kotlin 2.0.21, AGP 8.13.1 and Gradle 8.14.3 matched the verified profile. The plan reported one blocker for the missing INTERNET declaration and supplied the exact source Manifest diff. Its complete app build remains a separate verification after permission approval.
+
+## Network Architecture v1 Phase 2
+
+retrofit-standard 0.3.0 保留 Retrofit 3.0.0 / OkHttp 4.12.0 与响应边界，新增 okhttp-tls 4.12.0 测试依赖。客户端来源、Cookie 和写请求防护的兼容性及实际构建范围见 [Phase 2 验收](network-architecture-v1-phase2.md)。

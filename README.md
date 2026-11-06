@@ -89,6 +89,8 @@ android-stack create --name StandardDemo --package com.example.standard --preset
 
 ## 已有工程集成
 
+网络 Recipe `retrofit-standard 0.3.0` 增加响应边界、精确来源凭据隔离和默认写请求重放防护。已有安装升级需要单独审查。 [网络架构与验收](docs/network-architecture-v1-phase2.md)
+
 ```sh
 android-stack inspect --project ./MyApp --json
 android-stack plan --project ./MyApp --recipe retrofit-standard

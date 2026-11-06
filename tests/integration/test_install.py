@@ -21,6 +21,23 @@ def test_roundtrip(project, recipe):
     assert set(status(project)['recipes']) == {recipe}
 
 
+@pytest.mark.parametrize('previous_version', ['0.1.1', '0.2.0'])
+def test_previous_network_recipe_version_requires_review_without_writes(project, previous_version):
+    previous = plan(project, 'retrofit-standard')
+    previous['version'] = previous_version
+    apply(previous)
+    before = {p: p.read_bytes() for p in project.rglob('*') if p.is_file()}
+
+    upgrade = plan(project, 'retrofit-standard')
+    assert upgrade['version'] == '0.3.0'
+    assert upgrade['already_installed']
+    assert upgrade['files'] == []
+    with pytest.raises(StackError, match='Recipe upgrade requires manual review'):
+        apply(upgrade)
+    assert {p: p.read_bytes() for p in project.rglob('*') if p.is_file()} == before
+    assert set(status(project)['managed_file_status'].values()) == {'ok'}
+
+
 def test_conflicting_version(project):
     build = project/'app/build.gradle.kts'
     build.write_text(build.read_text()+'\ndependencies { implementation("com.squareup.retrofit2:retrofit:2.9.0") }')

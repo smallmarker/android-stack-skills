@@ -1,11 +1,40 @@
 # Network
 
-Non-Hilt: `val api = HttpClientFactory.retrofit(NetworkConfig("https://api.example.com/")).create(UserApi::class.java)`.
-Call `UserRepository(api).getUser()` from a coroutine. Switch on Success/Failure.
-Replace the example endpoint and DTO with your backend contract; this does not assume a response envelope.
+Create one Retrofit instance per base URL and client policy in the application composition root. In a project without Hilt, keep and reuse the instance returned by `HttpClientFactory.retrofit(NetworkConfig("https://api.example.com/"))`. With Hilt, supply singleton `NetworkConfig` and `TokenProvider` bindings and reuse the installed Retrofit binding. Keep credentials and real endpoints application-owned. Do not use the authenticated client for untrusted origins.
 
-Hilt: if enabled at installation, provide singleton `NetworkConfig` and `TokenProvider` from your app's module.
-No endpoint or token is embedded by the installer. Existing Hilt setups must already compile.
-Use separate factories if the application has multiple base URLs. Do not share auth clients with untrusted hosts.
+The example creates `UserApi` from that Retrofit instance and calls `UserRepository(api).getUser()` from a coroutine. The sample contract requires a positive JSON integer ID that fits in a Long and a non-blank JSON string name. Those constraints belong to this endpoint. Other APIs may permit zero, blank strings, optional fields or different formats.
 
-The installed tests exercise real HTTP using MockWebServer; production configuration requires HTTPS.
+## Response boundary
+
+- For a required payload, declare `suspend fun ...(): Response<YourDto>` and use `safeApiResponse(service::method, ::validateAndMap)`. A mapper returns `ApiResult.Success(appModel)` or `ApiResult.Failure(ApiError.InvalidField("field", reason))`. The field name is a static schema identifier. Never include values or response content in the error.
+- Declare wire fields with `@SerializedName` and choose field types that preserve the distinctions your contract needs. The sample uses nullable `JsonElement` for the two required fields so Gson cannot silently coerce a number to a string or a missing primitive to zero. Check token type and range before conversion, then apply endpoint-specific domain rules.
+- Required 204/205, zero-byte 2xx and JSON null become `MissingBody`. Invalid JSON or a top-level shape the converter cannot decode becomes `Parsing`. Missing or null fields, wrong wire type/range and violated endpoint constraints are distinct `InvalidField` reasons. Non-2xx retains its status as `Http` regardless of error-body format. Known transport errors remain `Connection` or `Timeout`.
+- When the backend contract permits empty success, declare `Response<Unit>` and call `safeEmptyApiResponse`. The HTTP status still determines success. Use a separate data policy when success can contain either meaningful data or no data.
+- Keep mapping pure and short. Let coroutine cancellation propagate to the caller, which owns request lifetime. Do not convert cancellation into a failure state or retry. Map transport failures to the application's existing error model at its data/presentation boundary as appropriate.
+- Use the factory's JSON converter configuration for production. MockWebServer JVM tests in the same module can use `Retrofit.Builder().baseUrl(server.url("/")).addNetworkJsonConverter()` with a test client to exercise the same decode behavior without changing production HTTPS requirements.
+
+## Trust and write policy
+
+Each factory client is bound to the exact HTTPS scheme, host and port in its NetworkConfig. An absolute @Url pointing elsewhere fails before an HTTP request is sent. Relative routes remain inside this boundary. For a third-party API create a separate configuration and call the factory without a TokenProvider. Keep its headers free of the application's credentials; do not derive it with newBuilder from an authenticated client.
+
+The TokenProvider owns Authorization. Per-request Authorization, Proxy-Authorization, Cookie and Cookie2 are removed before injection. Cookie jars and authenticators are disabled. Host overrides are removed. Custom config headers such as X-Api-Key belong only to that client's origin; their names and values need review before creating another client. Cookie-based authentication requires an application-specific reviewed adaptation.
+
+All redirects, including same-origin and HTTPS-to-HTTP, return to the caller as 3xx. Treat these as HTTP failures at the response boundary. A caller choosing to follow a Location must independently validate the new origin, method, body and credential policy.
+
+Connection recovery is disabled. Non-GET/HEAD request bodies are marked one-shot; a bodyless DELETE is sent with a zero-length one-shot body. This also stops OkHttp 4.12.0 follow-ups such as 503 with Retry-After: 0. Authenticator is NONE, so 401 does not refresh or resubmit. GET/HEAD can still receive library status follow-ups such as 503; use them only for read semantics. Marking a write idempotent does not automatically enable retries. An explicit application retry needs the server's idempotency-key scope and expiry contract, the same key and payload across attempts, and request-count tests. Cancellation, timeout and a lost response leave the server outcome potentially unknown. Client controls do not establish exactly-once execution.
+
+No HTTP logging interceptor is installed. Keep headers, cookies, bodies, full URLs, query strings and exception messages out of application logs. Any added telemetry must use reviewed static event names and allowlisted metadata. A builder mutation, extra interceptor, authenticator or logging SDK needs its own security review and tests.
+
+## Add an API to an existing app
+
+For a request such as “fetch order details”, start from the project's architecture decision, a working Service → Repository call, and its tests. Record the HTTP method/path, exact trust origin, authentication owner, redirect policy, side effects, retry permission, any idempotency-key contract, sensitive headers, expected body and error semantics against the backend contract. Use the existing Retrofit instance, result model, cancellation and DI conventions. Add the service declaration, wire DTO, validation, application model mapping and tests in application-owned source. Extend an existing application-owned service or repository where appropriate. Treat the installed `Network.kt` and its example service as a reference and reusable infrastructure. Preserve Recipe-owned source and its recorded hashes.
+
+Use the project's existing error translation. Exercise a valid response and its mapped value, HTTP failure, missing or malformed body, and required-field violations against MockWebServer. Add cancellation coverage when changing request lifetime. For credential or URL changes, use the production factory with test-only TLS trust and two servers to check actual headers and rejected/redirected targets. For writes, record the received method, path, body and request count under success, 401, 408, 503, redirects, timeout, disconnect and cancellation. The installed NetworkSecurityTest is a reference; keep business tests application-owned. Run the selected module's real `assembleDebug` and `testDebugUnitTest` tasks. An API addition uses the installed network stack and does not require installing the Recipe again.
+
+## Existing installations
+
+Recipe 0.3.0 retains the 0.2.0 response boundary. Its stronger origin restriction, credential ownership, disabled connection recovery and one-shot writes change client behavior. Review cookie authentication, dynamic URLs, manual Authorization headers, automatic connection recovery and bodyless DELETE callers before migrating. okhttp-tls 4.12.0 is a testImplementation dependency only; test keys are generated in test memory. Production TLS trust and hostname verification use system defaults.
+
+The 0.2.0 response boundary keeps the `ApiResult`, `safeApiCall`, `User` and `UserRepository.getUser()` API shapes. Direct callers of the sample `UserApi.getUser()` now receive `Response<UserDto>`. Prefer the repository or explicitly handle and map that response. Exhaustive `when` expressions over `ApiError` need `MissingBody` and `InvalidField` cases. The factory now decodes strict JSON. Review endpoints that depended on permissive JSON before opting in.
+
+Recipe 0.1.1 and 0.2.0 projects keep their recorded files and dependencies. Use the existing stack for ordinary feature changes, using app-owned response handling if the new helpers are unavailable. To adopt 0.3.0, review call sites and a generated diff in an isolated copy. The CLI guards version changes and ownership drift. Keep the old toolchain and a rollback point; do not overwrite Recipe-owned files or edit the record to bypass those checks.

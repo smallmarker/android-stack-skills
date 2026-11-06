@@ -9,6 +9,6 @@
     "distribution.release-identity.v1"
   ],
   "recipes": {
-    "retrofit-standard": "0.1.1"
+    "retrofit-standard": "0.3.0"
   }
 }

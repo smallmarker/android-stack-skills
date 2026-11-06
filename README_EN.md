@@ -89,6 +89,8 @@ Open the [Lightweight example](examples/lightweight-app) or [Standard example](e
 
 ## Integrate Existing Projects
 
+Network Recipe `retrofit-standard 0.3.0` adds explicit response boundaries, credential isolation by exact origin, and default write-request replay protection. Upgrading an existing installation requires a separate review. [Network architecture and verification](docs/network-architecture-v1-phase2.md)
+
 ```sh
 android-stack inspect --project ./MyApp --json
 android-stack plan --project ./MyApp --recipe retrofit-standard

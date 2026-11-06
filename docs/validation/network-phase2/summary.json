@@ -1,0 +1,142 @@
+{
+  "date": "2026-11-06",
+  "recipe": "retrofit-standard",
+  "recipe_version": "0.3.0",
+  "okhttp": "4.12.0",
+  "distribution": "local wheel 0.3.0rc1, unpublished",
+  "wheel_sha256": "91361d8d0b3eca523ec25af255c914b9ad468a2e1d50b77cfbbb66f9692b6a75",
+  "python": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 88
+  },
+  "jvm": {
+    "response_tests": 24,
+    "https_security_tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "android": {
+    "kotlin-2.0.21": {
+      "fixture": "<network-test-root>/compatibility-final/kotlin-2.0.21",
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "debug_apk": true,
+      "gradle": {
+        "success": true,
+        "exit_code": 0,
+        "command": [
+          "<network-test-root>/compatibility-final/kotlin-2.0.21/gradlew",
+          ":app:assembleDebug",
+          ":app:testDebugUnitTest",
+          "--console=plain",
+          "--stacktrace"
+        ],
+        "log": "<network-test-root>/compatibility-final/kotlin-2.0.21/.android-stack/verification.log"
+      }
+    },
+    "kotlin-2.2.20": {
+      "fixture": "<network-test-root>/compatibility-final/kotlin-2.2.20",
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "debug_apk": true,
+      "gradle": {
+        "success": true,
+        "exit_code": 0,
+        "command": [
+          "<network-test-root>/compatibility-final/kotlin-2.2.20/gradlew",
+          ":app:assembleDebug",
+          ":app:testDebugUnitTest",
+          "--console=plain",
+          "--stacktrace"
+        ],
+        "log": "<network-test-root>/compatibility-final/kotlin-2.2.20/.android-stack/verification.log"
+      }
+    },
+    "lightweight": {
+      "fixture": "<network-test-root>/lightweight",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "debug_apk": true,
+      "gradle": {
+        "success": true,
+        "exit_code": 0,
+        "command": [
+          "<network-test-root>/lightweight/gradlew",
+          ":app:assembleDebug",
+          ":app:testDebugUnitTest",
+          "--console=plain",
+          "--stacktrace"
+        ],
+        "log": "<network-test-root>/lightweight/.android-stack/verification.log"
+      }
+    },
+    "standard": {
+      "fixture": "<network-test-root>/standard",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "debug_apk": true,
+      "gradle": {
+        "success": true,
+        "exit_code": 0,
+        "command": [
+          "<network-test-root>/standard/gradlew",
+          ":app:assembleDebug",
+          ":app:testDebugUnitTest",
+          "--console=plain",
+          "--stacktrace"
+        ],
+        "log": "<network-test-root>/standard/.android-stack/verification.log"
+      }
+    },
+    "order": {
+      "fixture": "<network-test-root>/order-final",
+      "tests": 43,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "debug_apk": true,
+      "gradle": {
+        "success": true,
+        "exit_code": 0,
+        "command": [
+          "<network-test-root>/order-final/gradlew",
+          ":app:assembleDebug",
+          ":app:testDebugUnitTest",
+          "--console=plain",
+          "--stacktrace"
+        ],
+        "log": "<network-test-root>/order-final/.android-stack/verification.log"
+      }
+    }
+  },
+  "source_sha256": {
+    "recipes/network/retrofit-standard/recipe.yaml": "a4413bcdf94dac872694a184e9885c25cd99cbf5f34c0940b00db3aac527b449",
+    "recipes/network/retrofit-standard/templates/NetworkSecurityTest.kt.j2": "ec0b7f80c2b5dae2b59024201acfbb0ba4fc78958f5a59813df47e02d2953fda",
+    "recipes/network/retrofit-standard/templates/NetworkModule.kt.j2": "c12581eef19e4f4100298786cf8571ab8173ca32e961baeb43d582ddc51ceab1",
+    "recipes/network/retrofit-standard/templates/Usage.md.j2": "ed570648590ed5190580e151ef471f3b63cfbf3aab77a18c2cfc457c25d85be4",
+    "recipes/network/retrofit-standard/templates/NetworkTest.kt.j2": "554777878a91e30f6c702fbf37ff36ab5bad8319048c82869b2f74fcfa4b3b9c",
+    "recipes/network/retrofit-standard/templates/Network.kt.j2": "c76b689366de6ec1fba2bd06c6c1fb026b0ba8ddfcb9afd3fc4f4858f2d9b946"
+  },
+  "legacy_0_2_0": {
+    "version": "0.2.0",
+    "new_plan_install": "blocked",
+    "writes": 0,
+    "old_snapshot_preserved": true
+  },
+  "skill_gate": "passed against wheel CLI, managed file statuses all ok",
+  "limits": [
+    "No production backend/device/release verification",
+    "Exactly-once requires server contract",
+    "GET/HEAD HTTP status follow-ups may remain",
+    "Builder mutations and external logging require independent review"
+  ]
+}

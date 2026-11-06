@@ -1,0 +1,77 @@
+COMMAND: <network-test-root>/standard/gradlew :app:assembleDebug :app:testDebugUnitTest --console=plain --stacktrace
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugBuildConfig
+> Task :app:checkDebugAarMetadata
+> Task :app:processDebugNavigationResources
+> Task :app:generateDebugResValues
+> Task :app:compileDebugNavigationResources
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:processDebugResources
+> Task :app:checkDebugDuplicateClasses
+> Task :app:kaptGenerateStubsDebugKotlin
+> Task :app:mergeExtDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeDebugNativeLibs
+> Task :app:stripDebugDebugSymbols
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:kaptDebugKotlin
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac
+> Task :app:hiltAggregateDepsDebug
+
+> Task :app:hiltJavaCompileDebug
+注: <network-test-root>/standard/app/build/generated/hilt/component_sources/debug/dev/phasetwo/standard/Hilt_StackApplication.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+
+> Task :app:processDebugJavaRes
+> Task :app:transformDebugClassesWithAsm
+> Task :app:mergeDebugJavaResource
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:mergeProjectDexDebug
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+> Task :app:kaptGenerateStubsDebugUnitTestKotlin
+
+> Task :app:kaptDebugUnitTestKotlin
+警告: 以下选项未被任何处理程序识别: '[dagger.fastInit, dagger.hilt.android.internal.disableAndroidSuperclassValidation, dagger.hilt.android.internal.projectType, dagger.hilt.internal.useAggregatingRootProcessor, kapt.kotlin.generated]'
+
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:hiltAggregateDepsDebugUnitTest
+> Task :app:hiltJavaCompileDebugUnitTest NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:transformDebugUnitTestClassesWithAsm
+> Task :app:testDebugUnitTest
+
+[Incubating] Problems report is available at: file://<network-test-root>/standard/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 41s
+54 actionable tasks: 54 executed

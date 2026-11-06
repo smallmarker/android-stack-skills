@@ -43,6 +43,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("com.squareup.okhttp3:okhttp-tls:4.12.0")
 }
 
 // android-stack: coil-standard

@@ -2,13 +2,14 @@
   "managed_files": {
     "app/android-stack/image/Usage.md": "87ba177a744ea904b14e10618a252b48aca8374d2f784c88a13892e71df8a7e0",
     "app/android-stack/logging/Usage.md": "a6c6653add3fadb764b46e9f1a005922fe6ff480e60480d2edd913fba2a2f07d",
-    "app/android-stack/network/Usage.md": "3d39a865e92bdf8f4353fa00a409191ac422359e0587625326b88424a66e738a",
-    "app/build.gradle.kts": "0801783e958632913c0fc3f8e77e6ac3780df3f42d0328b80c82ae40920e975d",
+    "app/android-stack/network/Usage.md": "ed570648590ed5190580e151ef471f3b63cfbf3aab77a18c2cfc457c25d85be4",
+    "app/build.gradle.kts": "3ccc74c1b9aab8f355bcb16a48ffee56705e6774ed98a7fa125603bbe4e48b75",
     "app/src/main/kotlin/com/example/lightweight/image/AppImage.kt": "9869281587723641836f1383eefdaf0d389d5b73ee450a21e199f19d2007474f",
     "app/src/main/kotlin/com/example/lightweight/logging/AppLogger.kt": "6d0246ffdbde1434eb24f8b118041c069f2c298dfdddc715d433fa4571657a65",
-    "app/src/main/kotlin/com/example/lightweight/network/Network.kt": "4ebad0610a59daaceef6e6c2bc39a7e4e2c50764866d141c0e3aab3c2a410fa6",
+    "app/src/main/kotlin/com/example/lightweight/network/Network.kt": "2e1a16d2af504c45ccca0655d7d99c77aa5fbe246a8becebd40596a4a3c3ee9f",
     "app/src/test/kotlin/com/example/lightweight/logging/LoggerTest.kt": "c79592d6618bdd89b253437df8779e5f58e54c5ca0fee9fad841ed11553a306c",
-    "app/src/test/kotlin/com/example/lightweight/network/NetworkTest.kt": "cc72ae23dde077e0dc1add1da0f2a9c89c87f16c6bfbff9db7aec09c4dc32db3"
+    "app/src/test/kotlin/com/example/lightweight/network/NetworkSecurityTest.kt": "d6164a3f1c6167430e40fee40b19f3ee5318b9402af5195841481733c9676912",
+    "app/src/test/kotlin/com/example/lightweight/network/NetworkTest.kt": "fadc196ab67430687884a6dd4eb0d863b6bb28f22b95069f03687e7386ab5de9"
   },
   "recipes": {
     "coil-standard": {
@@ -53,9 +54,11 @@
     "retrofit-standard": {
       "adaptation": {
         "hilt": false,
+        "main_source": "app/src/main/kotlin",
         "module": "app",
         "package": "com.example.lightweight",
-        "package_path": "com/example/lightweight"
+        "package_path": "com/example/lightweight",
+        "test_source": "app/src/test/kotlin"
       },
       "dependencies": [
         {
@@ -90,6 +93,11 @@
         },
         {
           "configuration": "testImplementation",
+          "module": "com.squareup.okhttp3:okhttp-tls",
+          "version": "4.12.0"
+        },
+        {
+          "configuration": "testImplementation",
           "module": "junit:junit",
           "version": "4.13.2"
         }
@@ -100,12 +108,13 @@
         "kotlin": "2.2.20"
       },
       "files": {
-        "app/android-stack/network/Usage.md": "3d39a865e92bdf8f4353fa00a409191ac422359e0587625326b88424a66e738a",
-        "app/src/main/kotlin/com/example/lightweight/network/Network.kt": "4ebad0610a59daaceef6e6c2bc39a7e4e2c50764866d141c0e3aab3c2a410fa6",
-        "app/src/test/kotlin/com/example/lightweight/network/NetworkTest.kt": "cc72ae23dde077e0dc1add1da0f2a9c89c87f16c6bfbff9db7aec09c4dc32db3"
+        "app/android-stack/network/Usage.md": "ed570648590ed5190580e151ef471f3b63cfbf3aab77a18c2cfc457c25d85be4",
+        "app/src/main/kotlin/com/example/lightweight/network/Network.kt": "2e1a16d2af504c45ccca0655d7d99c77aa5fbe246a8becebd40596a4a3c3ee9f",
+        "app/src/test/kotlin/com/example/lightweight/network/NetworkSecurityTest.kt": "d6164a3f1c6167430e40fee40b19f3ee5318b9402af5195841481733c9676912",
+        "app/src/test/kotlin/com/example/lightweight/network/NetworkTest.kt": "fadc196ab67430687884a6dd4eb0d863b6bb28f22b95069f03687e7386ab5de9"
       },
       "modified": {
-        "app/build.gradle.kts": "d7a83b0aa8fe04b5b7e095732d1cae46e9a1cb80b20a0f48cc0adb1036307cd5"
+        "app/build.gradle.kts": "09cda3cf8001a5cccc110bf21b966be50899848a1901b62eba2cab2335af0218"
       },
       "source": {
         "copied_source": [],
@@ -113,7 +122,7 @@
         "repository": "https://github.com/square/retrofit",
         "revision": "3.0.0"
       },
-      "version": "0.1.1"
+      "version": "0.3.0"
     },
     "timber-standard": {
       "adaptation": {

@@ -1,0 +1,46 @@
+OkHttp control retryOnConnectionFailure=false POST received=2
+write method=POST status=401 received=1
+write method=POST status=407 received=1
+write method=POST status=408 received=1
+write method=POST status=421 received=1
+write method=POST status=503 received=1
+write method=PUT status=401 received=1
+write method=PUT status=407 received=1
+write method=PUT status=408 received=1
+write method=PUT status=421 received=1
+write method=PUT status=503 received=1
+write method=PATCH status=401 received=1
+write method=PATCH status=407 received=1
+write method=PATCH status=408 received=1
+write method=PATCH status=421 received=1
+write method=PATCH status=503 received=1
+write method=DELETE status=401 received=1
+write method=DELETE status=407 received=1
+write method=DELETE status=408 received=1
+write method=DELETE status=421 received=1
+write method=DELETE status=503 received=1
+write method=POST redirect=301 source=1 target=0
+write method=POST redirect=302 source=1 target=0
+write method=POST redirect=303 source=1 target=0
+write method=POST redirect=307 source=1 target=0
+write method=POST redirect=308 source=1 target=0
+write method=PUT redirect=301 source=1 target=0
+write method=PUT redirect=302 source=1 target=0
+write method=PUT redirect=303 source=1 target=0
+write method=PUT redirect=307 source=1 target=0
+write method=PUT redirect=308 source=1 target=0
+write method=PATCH redirect=301 source=1 target=0
+write method=PATCH redirect=302 source=1 target=0
+write method=PATCH redirect=303 source=1 target=0
+write method=PATCH redirect=307 source=1 target=0
+write method=PATCH redirect=308 source=1 target=0
+write method=DELETE redirect=301 source=1 target=0
+write method=DELETE redirect=302 source=1 target=0
+write method=DELETE redirect=303 source=1 target=0
+write method=DELETE redirect=307 source=1 target=0
+write method=DELETE redirect=308 source=1 target=0
+write partial-body received=1 bytes=32768
+write pre-TLS connections=1 HTTP-executions=0
+cancelled write received=1 result-published=false
+write failure=NO_RESPONSE received=1
+write failure=DISCONNECT_AFTER_REQUEST received=1
