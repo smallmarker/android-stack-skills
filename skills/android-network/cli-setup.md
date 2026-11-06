@@ -4,7 +4,7 @@ For a Recipe operation, first resolve a trusted `android-stack` executable. Run 
 
 ## Install from GitHub development source
 
-If no compatible CLI is available, propose installing the tested development commit `900b57f8ff78ba1048c2ded4475e8c5bfc8f4210` from the canonical repository. Present the exact source, Python 3.11 executable, new absolute venv path outside the Android project, and installation effects. This uses Git and pip network access to fetch the pinned source and resolve Python build and runtime dependencies. The commit pins the project source. pip resolves dependencies within the package's declared constraints. The installation leaves the existing CLI, global PATH and Android project files intact.
+If no compatible CLI is available, propose installing the tested development commit `34d418039574bf04b0db74f80c9696c7a7db053c` from the canonical repository. Present the exact source, Python 3.11 executable, new absolute venv path outside the Android project, and installation effects. This uses Git and pip network access to fetch the pinned source and resolve Python build and runtime dependencies. The commit pins the project source. pip resolves dependencies within the package's declared constraints. The installation leaves the existing CLI, global PATH and Android project files intact.
 
 Wait for explicit approval before creating the environment or running pip. If approval is declined or unavailable, stop before any project write. Use a fresh path and run the commands from outside the Android project. For POSIX shells, substitute the approved absolute path in the example below.
 
@@ -13,7 +13,7 @@ CLI_ENV=/absolute/path/to/new-venv
 test ! -e "$CLI_ENV" && test ! -L "$CLI_ENV" &&
   python3.11 -m venv "$CLI_ENV" &&
   "$CLI_ENV/bin/python" -m pip --isolated install \
-    'git+https://github.com/smallmarker/android-stack-skills.git@900b57f8ff78ba1048c2ded4475e8c5bfc8f4210' &&
+    'git+https://github.com/smallmarker/android-stack-skills.git@34d418039574bf04b0db74f80c9696c7a7db053c' &&
   "$CLI_ENV/bin/android-stack" capabilities --json
 ```
 
